@@ -60,7 +60,7 @@ main = Web.scotty 8080 $ do
                li_ $ do gh "adarcroom" "adarcroom"; ", a C/ncurses port of "
                         a_ [href_ adr] "A Dark Room"
                li_ $ do gh "stratagem" "stratagem"
-                        ", a Hakell/Brick clone of the board game"
+                        ", a Haskell/Brick clone of the board game"
                li_ $ do gh ".bin" "bin"; ", a set of small, helpful utils"
                li_ $ do gh ".dotfiles" "dotfiles"; ", my Linux configurations"
              h2_ "Academic Work"
