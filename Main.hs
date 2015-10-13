@@ -30,8 +30,10 @@ main = Web.scotty 8080 $ do
          head_ $ do title_ "/home/halosghost"
                     meta_ [charset_ "utf-8"]
                     meta_ [name_ "viewport"
-                          ,content_ "width=device-width, initial-scale=1"]
-         body_ [style_ "margin: 5% 15%;"] $ do
+                          ,content_ "width=device-width,initial-scale=1"]
+                    style_ $ mconcat ["#main{margin:5% 15%;}"
+                                     ,"li{margin-bottom:1em;}"]
+         body_ [id_ "main"] $ do
              h1_ "Sam Stuewe (halosghost)"
              h2_ "Background"
              p_ $ do "Though most of my personal projects are end-user facing, "
@@ -51,7 +53,6 @@ main = Web.scotty 8080 $ do
                      "there are still many more things I would like to "
                      "implement in all of them."
              ul_ $ do
-               style_ "li { margin-bottom: 1em; }"
                li_ $ do gh "shaman" "shaman"; ", a simple cli weather program"
                li_ $ do gh "pbpst" "pbpst"
                         ", a simple, but featureful pastebin client for "
