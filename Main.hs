@@ -22,8 +22,12 @@ main = Web.scotty 8080 $ do
            f <- Web.param "file"
            Web.file $ mconcat ["assets/",f]
 
-   Web.get "/" $ Web.html . renderText $ doctypehtml_ $ do
+   Web.get "/" $ Web.html . renderText $ do
+      doctype_; html_ [lang_ "en"] $ do
          head_ $ do title_ "/home/halosghost"
+                    meta_ [charset_ "utf-8"]
+                    meta_ [name_ "viewport"
+                          ,content_ "width=device-width, initial-scale=1"]
          body_ [style_ "margin: 5% 15%;"] $ do
              h1_ "Sam Stuewe (halosghost)"
              h2_ "Background"
