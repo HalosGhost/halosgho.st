@@ -75,6 +75,7 @@ main = Web.scotty 8080 $ do
                                a_ [href_ "http://www.catb.org/hacker-emblem"] $
                                   img_ [ src_ "/assets/hlogo.png"
                                        , style_ "float: right;"
+                                       , width_ "14px", height_ "14px"
                                        ]
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
