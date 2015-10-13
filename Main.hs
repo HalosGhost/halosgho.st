@@ -7,11 +7,14 @@ import qualified Web.Scotty                           as Web
 import           Lucid.Base
 import           Lucid.Html5
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import           Network.Wai.Middleware.Gzip          (gzip, gzipFiles, def
+                                                      ,GzipFiles(GzipCompress))
 import           Network.Wai.Middleware.Static        (addBase, noDots
                                                       ,staticPolicy, (>->))
 
 main :: IO ()
 main = Web.scotty 8080 $ do
+   Web.middleware $ gzip $ def { gzipFiles = GzipCompress }
    Web.middleware $ staticPolicy (noDots >-> addBase "assets")
    Web.middleware logStdoutDev
 
