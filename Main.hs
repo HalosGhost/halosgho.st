@@ -42,8 +42,7 @@ main = Web.scotty 8080 $ do
                      "implement in all of them."
              ul_ $ do
                style_ "li { margin-bottom: 1em; }"
-               li_ $ do gh "shaman" "shaman"
-                        ", an unassuming cli weather program"
+               li_ $ do gh "shaman" "shaman"; ", a simple cli weather program"
                li_ $ do gh "pbpst" "pbpst"
                         ", a simple, but featureful pastebin client for "
                         a_ [href_ "https://github.com/ptpb/pb"] "pb"
@@ -53,8 +52,7 @@ main = Web.scotty 8080 $ do
                li_ $ do gh "stratagem" "stratagem"
                         ", a Hakell/Brick clone of the board game"
                li_ $ do gh ".bin" "bin"; ", a set of small, helpful utils"
-               li_ $ do gh ".dotfiles" "dotfiles"
-                        ", my Linux configuration files"
+               li_ $ do gh ".dotfiles" "dotfiles"; ", my Linux configurations"
              h2_ "Academic Work"
              p_ $ do "I graduated with Latin and departmental honors from "
                      a_ [href_ "http://macalester.edu/"] "Macalester"
@@ -69,5 +67,5 @@ main = Web.scotty 8080 $ do
                                        , style_ "float: right;"
                                        ]
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
-           b = "https://github.com/HalosGhost/"
-           adr = "http://adarkroom.doublespeakgames.com/"
+           b       = "https://github.com/HalosGhost/"
+           adr     = "http://adarkroom.doublespeakgames.com/"
