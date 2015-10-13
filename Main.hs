@@ -20,10 +20,13 @@ main = Web.scotty 8080 $ do
 
    Web.get "/assets/:file" $ do
            f <- Web.param "file"
+           Web.setHeader "cache-control" "public, max-age=604800"
            Web.file $ mconcat ["assets/",f]
 
-   Web.get "/" $ Web.html . renderText $ do
-      doctype_; html_ [lang_ "en"] $ do
+   Web.get "/" $ do
+     Web.setHeader "cache-control" "public, max-age=1800"
+     Web.html . renderText $ do
+       doctype_; html_ [lang_ "en"] $ do
          head_ $ do title_ "/home/halosghost"
                     meta_ [charset_ "utf-8"]
                     meta_ [name_ "viewport"
