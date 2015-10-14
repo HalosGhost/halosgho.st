@@ -26,14 +26,15 @@ main = Web.scotty 8080 $ do
 
    Web.get "/" $ do
      Web.setHeader "cache-control" "public, max-age=1800"
-     Web.setHeader "last-modified" "Wed, 14 Oct 2015 22:28:49 GMT"
+     Web.setHeader "last-modified" "Wed, 14 Oct 2015 23:42:59 GMT"
      Web.html . renderText $ do
        doctype_; html_ [lang_ "en"] $ do
          head_ $ do title_ "/home/halosghost"
                     meta_ [charset_ "utf-8"]
                     meta_ [name_ "viewport"
                           ,content_ "width=device-width,initial-scale=1"]
-                    style_ $ mconcat ["#main{margin:5% 15%;font-family:sans;}"
+                    style_ $ mconcat ["#main{margin:5% 15%;font-family:sans;"
+                                     ,      "background:#efefef;}"
                                      ,"li{margin-bottom:1em;}"
                                      ,"footer{border-top:1px solid;}"
                                      ,"img{float:right;}"]
@@ -74,12 +75,11 @@ main = Web.scotty 8080 $ do
                      " class of 2014, receiving a Bachelor of Arts degree in "
                      "Political Science. You can view the full text of my "
                      "honors' thesis on my "; gh "honors_thesis" "GitHub"; "."
-             footer_ $ p_ $ do "Sam Stuewe © 2014–2015. See the source of this "
+             footer_ . p_ $ do "Sam Stuewe © 2014–2015. See the source of this "
                                "website "; gh "halosgho.st" "here"; "."
                                a_ [href_ "http://www.catb.org/hacker-emblem"] $
                                   img_ [ src_ "/assets/hlogo.png"
-                                       , width_ "14px", height_ "14px"
-                                       ]
+                                       , width_ "14px", height_ "14px"]
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
