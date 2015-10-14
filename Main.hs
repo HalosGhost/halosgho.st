@@ -35,6 +35,7 @@ main = Web.scotty 8080 $ do
                           ,content_ "width=device-width,initial-scale=1"]
                     style_ $ mconcat ["#main{margin:5% 15%;}"
                                      ,"li{margin-bottom:1em;}"
+                                     ,"footer{border-top:1px solid;}"
                                      ,"img{float:right;}"]
          body_ [id_ "main"] $ do
              h1_ "Sam Stuewe (halosghost)"
@@ -73,7 +74,6 @@ main = Web.scotty 8080 $ do
                      " class of 2014, receiving a Bachelor of Arts degree in "
                      "Political Science. You can view the full text of my "
                      "honors' thesis on my "; gh "honors_thesis" "GitHub"; "."
-             hr_ []
              footer_ $ p_ $ do "Sam Stuewe © 2014–2015. See the source of this "
                                "website "; gh "halosgho.st" "here"; "."
                                a_ [href_ "http://www.catb.org/hacker-emblem"] $
