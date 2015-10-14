@@ -33,7 +33,7 @@ main = Web.scotty 8080 $ do
                     meta_ [charset_ "utf-8"]
                     meta_ [name_ "viewport"
                           ,content_ "width=device-width,initial-scale=1"]
-                    style_ $ mconcat ["#main{margin:5% 15%;}"
+                    style_ $ mconcat ["#main{margin:5% 15%;font-family:sans;}"
                                      ,"li{margin-bottom:1em;}"
                                      ,"footer{border-top:1px solid;}"
                                      ,"img{float:right;}"]
