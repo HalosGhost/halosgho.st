@@ -34,7 +34,8 @@ main = Web.scotty 8080 $ do
                     meta_ [name_ "viewport"
                           ,content_ "width=device-width,initial-scale=1"]
                     style_ $ mconcat ["#main{margin:5% 15%;}"
-                                     ,"li{margin-bottom:1em;}"]
+                                     ,"li{margin-bottom:1em;}"
+                                     ,"img{float:right;}"]
          body_ [id_ "main"] $ do
              h1_ "Sam Stuewe (halosghost)"
              h2_ "Background"
@@ -77,7 +78,6 @@ main = Web.scotty 8080 $ do
                                "website "; gh "halosgho.st" "here"; "."
                                a_ [href_ "http://www.catb.org/hacker-emblem"] $
                                   img_ [ src_ "/assets/hlogo.png"
-                                       , style_ "float: right;"
                                        , width_ "14px", height_ "14px"
                                        ]
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
