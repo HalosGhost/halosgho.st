@@ -16,6 +16,7 @@ executable hgweb
   ghc-options:       -Wall -O2
   build-depends:     base                  >= 4.8     && < 4.9,
                      scotty                >= 0.10.2  && < 0.11,
+                     scotty-tls            >= 0.4.0   && < 0.5,
                      wai-extra             >= 3.0     && < 3.1,
                      wai-middleware-static >= 0.8.0   && < 0.9,
                      lucid                 >= 2.9.2   && < 2.10,

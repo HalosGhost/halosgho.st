@@ -4,6 +4,7 @@
 module Main where
 
 import qualified Web.Scotty                           as Web
+import qualified Web.Scotty.TLS                       as Web
 import           Lucid.Base
 import           Lucid.Html5
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
@@ -12,8 +13,12 @@ import           Network.Wai.Middleware.Gzip          (gzip, gzipFiles, def
 import           Network.Wai.Middleware.Static        (addBase, noDots
                                                       ,staticPolicy, (>->))
 
+sslBaseDir :: FilePath
+sslBaseDir = "/etc/ssl/"
+
 main :: IO ()
-main = Web.scotty 8080 $ do
+main = Web.scottyTLS 8080 (sslBaseDir ++ "private/halosgho.st.pem")
+                          (sslBaseDir ++ "certs/halosgho.st.crt")   $ do
    Web.middleware $ gzip $ def { gzipFiles = GzipCompress }
    Web.middleware $ staticPolicy (noDots >-> addBase "assets")
    Web.middleware logStdoutDev
