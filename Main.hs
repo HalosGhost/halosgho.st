@@ -17,8 +17,8 @@ sslBaseDir :: FilePath
 sslBaseDir = "/etc/ssl/"
 
 main :: IO ()
-main = Web.scottyTLS 8080 (sslBaseDir ++ "private/halosgho.st.pem")
-                          (sslBaseDir ++ "certs/halosgho.st.crt")   $ do
+main = Web.scottyTLS 443 (sslBaseDir ++ "private/halosgho.st.pem")
+                         (sslBaseDir ++ "certs/halosgho.st.crt")   $ do
    Web.middleware $ gzip $ def { gzipFiles = GzipCompress }
    Web.middleware $ staticPolicy (noDots >-> addBase "assets")
    Web.middleware logStdoutDev
