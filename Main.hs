@@ -84,6 +84,7 @@ main = Web.scottyTLS 443 (sslBaseDir ++ "private/halosgho.st.pem")
                                "website "; gh "halosgho.st" "here"; "."
                                a_ [href_ "http://www.catb.org/hacker-emblem"] $
                                   img_ [ src_ "/assets/hlogo.png"
+                                       , alt_ "Hacker Logo"
                                        , width_ "14", height_ "14"]
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
