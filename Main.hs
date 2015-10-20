@@ -36,7 +36,9 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
                     meta_ [charset_ "utf-8"]
                     meta_ [name_ "viewport"
                           ,content_ "width=device-width,initial-scale=1"]
-                    style_ $ mconcat ["#main{margin:5% 15%;font-family:sans;"
+                    style_ $ mconcat ["#main{margin:5% 15%;"
+                                     ,      "font-family:sans;"
+                                     ,      "text-align:justify;"
                                      ,      "background:#efefef;}"
                                      ,"li{margin-bottom:1em;}"
                                      ,"footer{border-top:1px solid;}"
