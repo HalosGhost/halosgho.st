@@ -8,6 +8,8 @@ import qualified Web.Scotty.TLS                       as Web
 import           Lucid.Base
 import           Lucid.Html5
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import           Network.Wai.Middleware.ETag          (etag, defaultETagContext
+                                                      ,MaxAge(..))
 import           Network.Wai.Middleware.Gzip          (gzip, gzipFiles, def
                                                       ,GzipFiles(GzipCompress))
 import           Network.Wai.Middleware.Static        (addBase, noDots
@@ -17,21 +19,17 @@ sslBaseDir :: FilePath
 sslBaseDir = "/etc/ssl/"
 
 main :: IO ()
-main = Web.scottyTLS 443 (sslBaseDir ++ "private/halosgho.st.pem")
-                         (sslBaseDir ++ "certs/halosgho.st.crt")   $ do
+main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
    Web.middleware . gzip $ def { gzipFiles = GzipCompress }
    Web.middleware . staticPolicy $ noDots >-> addBase "assets"
+   Web.middleware . etag ctx $ MaxAgeSeconds 604800
    Web.middleware logStdoutDev
 
    Web.get "/assets/:file" $ do
            f <- Web.param "file"
-           Web.setHeader "cache-control" "public, max-age=604800"
-           Web.setHeader "last-modified" "Wed, 14 Oct 2015 22:28:49 GMT"
            Web.file $ mconcat ["assets/",f]
 
    Web.get "/" $ do
-     Web.setHeader "cache-control" "public, max-age=1800"
-     Web.setHeader "last-modified" "Wed, 14 Oct 2015 23:42:59 GMT"
      Web.html . renderText $ do
        doctype_; html_ [lang_ "en"] $ do
          head_ $ do title_ "/home/halosghost"
@@ -89,3 +87,5 @@ main = Web.scottyTLS 443 (sslBaseDir ++ "private/halosgho.st.pem")
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
+           key     = sslBaseDir ++ "private/halosgho.st.pem"
+           cert    = sslBaseDir ++ "certs/halosgho.st.crt"
