@@ -42,7 +42,9 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
                                      ,      "background:#efefef;}"
                                      ,"li{margin-bottom:1em;}"
                                      ,"footer{border-top:1px solid;}"
-                                     ,"img{float:right;}"]
+                                     ,"table{float:right;border:none;}"
+                                     ,"td{width:2px;height:2px;}"
+                                     ,".alive{background:#000;}"]
          body_ [id_ "main"] $ do
              h1_ "Sam Stuewe (halosghost)"
              h2_ "Background"
@@ -83,11 +85,13 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
              footer_ . p_ $ do "Sam Stuewe © 2014–2015. See the source of this "
                                "website "; gh "halosgho.st" "here"; "."
                                a_ [href_ "http://www.catb.org/hacker-emblem"] $
-                                  img_ [ src_ "/assets/hlogo.png"
-                                       , alt_ "Hacker Logo"
-                                       , width_ "14", height_ "14"]
+                                  table_ [] $ do tr_ $ do dead;  alive; dead
+                                                 tr_ $ do dead;  dead;  alive
+                                                 tr_ $ do alive; alive; alive
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
            key     = sslBaseDir ++ "private/halosgho.st.pem"
            cert    = sslBaseDir ++ "certs/halosgho.st.crt"
+           dead    = td_ ""
+           alive   = td_ [class_ "alive"] ""
