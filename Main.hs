@@ -15,7 +15,7 @@ import           Network.Wai.Middleware.Gzip          (gzip, gzipFiles, def
 import           Network.Wai.Middleware.Static        (addBase, noDots
                                                       ,staticPolicy, (>->))
 import qualified Network.TLS                          as TLS
-import qualified Network.TLS.Extra                    as TLSExtra
+import           Network.TLS.Extra                    (ciphersuite_strong)
 import           Network.Wai.Handler.WarpTLS          (certFile, keyFile
                                                       ,defaultTlsSettings
                                                       ,tlsAllowedVersions
@@ -27,11 +27,7 @@ tlsSet = defaultTlsSettings
        { keyFile  = "/etc/ssl/private/halosgho.st.pem"
        , certFile = "/etc/ssl/certs/halosgho.st.crt"
        , tlsAllowedVersions = [TLS.TLS12]
-       , tlsCiphers = [ TLSExtra.cipher_DHE_RSA_AES256_SHA256
-                      , TLSExtra.cipher_DHE_RSA_AES256_SHA1
-                      , TLSExtra.cipher_DHE_DSS_AES256_SHA1
-                      , TLSExtra.cipher_AES256_SHA1
-                      ]
+       , tlsCiphers = ciphersuite_strong
        }
 
 
