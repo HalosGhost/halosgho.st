@@ -14,12 +14,29 @@ import           Network.Wai.Middleware.Gzip          (gzip, gzipFiles, def
                                                       ,GzipFiles(GzipCompress))
 import           Network.Wai.Middleware.Static        (addBase, noDots
                                                       ,staticPolicy, (>->))
+import qualified Network.TLS                          as TLS
+import qualified Network.TLS.Extra                    as TLSExtra
+import           Network.Wai.Handler.WarpTLS          (certFile, keyFile
+                                                      ,defaultTlsSettings
+                                                      ,tlsAllowedVersions
+                                                      ,tlsCiphers
+                                                      ,keyFile, TLSSettings(..))
 
-sslBaseDir :: FilePath
-sslBaseDir = "/etc/ssl/"
+tlsSet :: TLSSettings
+tlsSet = defaultTlsSettings
+       { keyFile  = "/etc/ssl/private/halosgho.st.pem"
+       , certFile = "/etc/ssl/certs/halosgho.st.crt"
+       , tlsAllowedVersions = [TLS.TLS12]
+       , tlsCiphers = [ TLSExtra.cipher_DHE_RSA_AES256_SHA256
+                      , TLSExtra.cipher_DHE_RSA_AES256_SHA1
+                      , TLSExtra.cipher_DHE_DSS_AES256_SHA1
+                      , TLSExtra.cipher_AES256_SHA1
+                      ]
+       }
+
 
 main :: IO ()
-main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
+main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
    Web.middleware . gzip $ def { gzipFiles = GzipCompress }
    Web.middleware . staticPolicy $ noDots >-> addBase "assets"
    Web.middleware . etag ctx $ MaxAgeSeconds 604800
@@ -89,8 +106,6 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
-           key     = sslBaseDir ++ "private/halosgho.st.pem"
-           cert    = sslBaseDir ++ "certs/halosgho.st.crt"
            hlogo   = a_ [href_ "http://www.catb.org/hacker-emblem"] $ do
                       p_ ""; table_ $ do tr_ $ do dead;  alive; dead
                                          tr_ $ do dead;  dead;  alive
