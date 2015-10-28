@@ -85,9 +85,9 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
              footer_ . p_ $ do "Sam Stuewe © 2014–2015. See the source of this "
                                "website "; gh "halosgho.st" "here"; "."
                                a_ [href_ "http://www.catb.org/hacker-emblem"] $ do
-                                  table_ [] $ do tr_ $ do dead;  alive; dead
-                                                 tr_ $ do dead;  dead;  alive
-                                                 tr_ $ do alive; alive; alive
+                                table_ [] $ do tr_ $ do dead;  alive; dead
+                                               tr_ $ do dead;  dead;  alive
+                                               tr_ $ do alive; alive; alive
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
