@@ -92,8 +92,8 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
            key     = sslBaseDir ++ "private/halosgho.st.pem"
            cert    = sslBaseDir ++ "certs/halosgho.st.crt"
            hlogo   = a_ [href_ "http://www.catb.org/hacker-emblem"] $ do
-                      p_ . table_ $ do tr_ $ do dead;  alive; dead
-                                       tr_ $ do dead;  dead;  alive
-                                       tr_ $ do alive; alive; alive
+                      p_ ""; table_ $ do tr_ $ do dead;  alive; dead
+                                         tr_ $ do dead;  dead;  alive
+                                         tr_ $ do alive; alive; alive
            dead    = td_ ""
            alive   = td_ [class_ "alive"] ""
