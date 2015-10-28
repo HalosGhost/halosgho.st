@@ -82,16 +82,18 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLS 443 key cert $ do
                      " class of 2014, receiving a Bachelor of Arts degree in "
                      "Political Science. You can view the full text of my "
                      "honors' thesis on my "; gh "honors_thesis" "GitHub"; "."
-             footer_ . p_ $ do "Sam Stuewe © 2014–2015. See the source of this "
-                               "website "; gh "halosgho.st" "here"; "."
-                               a_ [href_ "http://www.catb.org/hacker-emblem"] $ do
-                                table_ [] $ do tr_ $ do dead;  alive; dead
-                                               tr_ $ do dead;  dead;  alive
-                                               tr_ $ do alive; alive; alive
+             footer_ $ do p_ [style_ "float: left;"] $ do
+                           "Sam Stuewe © 2014–2015. See the source of this "
+                           "website "; gh "halosgho.st" "here"; "."
+                          hlogo
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
            key     = sslBaseDir ++ "private/halosgho.st.pem"
            cert    = sslBaseDir ++ "certs/halosgho.st.crt"
+           hlogo   = a_ [href_ "http://www.catb.org/hacker-emblem"] $ do
+                      p_ . table_ $ do tr_ $ do dead;  alive; dead
+                                       tr_ $ do dead;  dead;  alive
+                                       tr_ $ do alive; alive; alive
            dead    = td_ ""
            alive   = td_ [class_ "alive"] ""
