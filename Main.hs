@@ -40,9 +40,13 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
 
    Web.get "/assets/:file" $ do
            f <- Web.param "file"
+           Web.setHeader "strict-transport-security"
+                         "max-age=31536000; includeSubDomains"
            Web.file $ mconcat ["assets/",f]
 
    Web.get "/" $ do
+     Web.setHeader "strict-transport-security"
+                   "max-age=31536000; includeSubDomains"
      Web.html . renderText $ do
        doctype_; html_ [lang_ "en"] $ do
          head_ $ do title_ "/home/halosghost"
