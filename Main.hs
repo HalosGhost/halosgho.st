@@ -27,8 +27,13 @@ tlsSet = defaultTlsSettings
        { keyFile  = "/etc/ssl/private/halosgho.st.pem"
        , certFile = "/etc/ssl/certs/halosgho.st.crt"
        , tlsAllowedVersions = [TLS.TLS12]
-       , tlsCiphers = TLSExtra.cipher_ECDHE_RSA_AES128CBC_SHA
-                    : TLSExtra.ciphersuite_strong
+       , tlsCiphers = [ TLSExtra.cipher_ECDHE_RSA_AES128GCM_SHA256
+                      , TLSExtra.cipher_ECDHE_ECDSA_AES128GCM_SHA256
+                      , TLSExtra.cipher_ECDHE_RSA_AES128CBC_SHA
+                      , TLSExtra.cipher_DHE_RSA_AES256_SHA256
+                      , TLSExtra.cipher_AES256_SHA256
+                      , TLSExtra.cipher_AES256_SHA1
+                      ]
        }
 
 
