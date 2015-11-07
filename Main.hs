@@ -69,7 +69,8 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
                                      ,"td{width:2px;height:2px;}"
                                      ,".alive{background:#000;}"]
          body_ [id_ "main"] $ do
-             h1_ "Sam Stuewe (halosghost)"
+           header_ $ h1_ "Sam Stuewe (halosghost)"
+           main_ $ do
              h2_ "Background"
              p_ $ do "Though most of my personal projects are end-user facing, "
                      "almost all my personal programming experience is in "
@@ -105,10 +106,10 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
                      " class of 2014, receiving a Bachelor of Arts degree in "
                      "Political Science. You can view the full text of my "
                      "honors' thesis on my "; gh "honors_thesis" "GitHub"; "."
-             footer_ $ do p_ [style_ "float: left;"] $ do
-                           "Sam Stuewe © 2014–2015. See the source of this "
-                           "website "; gh "halosgho.st" "here"; "."
-                          hlogo
+           footer_ $ do p_ [style_ "float: left;"] $ do
+                         "Sam Stuewe © 2014–2015. See the source of this "
+                         "website "; gh "halosgho.st" "here"; "."
+                        hlogo
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
