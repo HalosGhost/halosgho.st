@@ -36,7 +36,6 @@ tlsSet = defaultTlsSettings
                       ]
        }
 
-
 main :: IO ()
 main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
    Web.middleware . gzip $ def { gzipFiles = GzipCompress }
