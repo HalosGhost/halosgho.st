@@ -107,8 +107,7 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
                      "honors' thesis on my "; gh "honors_thesis" "GitHub"; "."
            footer_ $ do p_ [style_ "float: left;"] $ do
                          "Sam Stuewe © 2014–2015. See the source of this "
-                         "website "; gh "halosgho.st" "here"; "."
-                        hlogo
+                         "website "; gh "halosgho.st" "here"; "."; hlogo
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
