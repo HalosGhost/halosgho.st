@@ -13,5 +13,5 @@ While it is a simple page, its setup boasts some fancy things that many sites th
 
 - `Valid HTML5 with no warnings or errors <https://validator.w3.org/nu/?showsource=yes&doc=https://halosgho.st/>`_
 - `An A+ Rating from SSLLabs <https://www.ssllabs.com/ssltest/analyze.html?d=https://halosgho.st>`_
-- `99% and 100% on PageSpeed and YSlow (respectively) <https://gtmetrix.com/reports/halosgho.st/e7rQehYX>`_
+- `99% and 100% on PageSpeed and YSlow (respectively) <https://gtmetrix.com/reports/halosgho.st/MjYxzfT0>`_
 - `Full HTTP2 support with ALPN <https://tools.keycdn.com/http2-test?url=https://halosgho.st>`_
