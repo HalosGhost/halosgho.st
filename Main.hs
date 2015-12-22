@@ -111,9 +111,11 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
-           hlogo   = a_ [href_ "http://www.catb.org/hacker-emblem"] $ do
-                      p_ ""; table_ $ do tr_ $ do dead;  alive; dead
-                                         tr_ $ do dead;  dead;  alive
-                                         tr_ $ do alive; alive; alive
+           target  = "window.location='http://www.catb.org/hacker-emblem/'"
+           hlogo   = do p_ ""; table_ [ onclick_ target
+                                      , style_ "cursor: pointer;"] $ do
+                                    tr_ $ do dead;  alive; dead
+                                    tr_ $ do dead;  dead;  alive
+                                    tr_ $ do alive; alive; alive
            dead    = td_ ""
            alive   = td_ [class_ "alive"] ""
