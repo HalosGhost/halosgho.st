@@ -36,7 +36,7 @@ tlsSet = defaultTlsSettings
                       ]
        }
 
-hsts :: ActionM ()
+hsts :: Web.ActionM ()
 hsts = Web.setHeader "strict-transport-security"
                      "max-age=31536000; includeSubDomains"
 
@@ -48,16 +48,13 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
    Web.middleware logStdoutDev
 
    Web.get "/media/:file" $ do
-     f <- Web.param "file"
-     hsts; Web.file $ mconcat ["media/",f]
+     f <- Web.param "file"; hsts; Web.file $ mconcat ["media/",f]
 
    Web.get "/assets/:file" $ do
-     f <- Web.param "file"
-     hsts; Web.file $ mconcat ["assets/",f]
+     f <- Web.param "file"; hsts; Web.file $ mconcat ["assets/",f]
 
    Web.get "/" $ do
-     hsts
-     Web.html . renderText $ do
+     hsts; Web.html . renderText $ do
        doctype_; html_ [lang_ "en"] $ do
          head_ $ do title_ "/home/halosghost"
                     meta_ [charset_ "utf-8"]
