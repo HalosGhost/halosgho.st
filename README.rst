@@ -15,3 +15,4 @@ While it is a simple page, its setup boasts some fancy things that many sites th
 - `An A+ Rating from SSLLabs <https://www.ssllabs.com/ssltest/analyze.html?d=https://halosgho.st>`_
 - `99% and 100% on PageSpeed and YSlow (respectively) <https://gtmetrix.com/reports/halosgho.st/ABt1HbMh>`_
 - `Full HTTP2 support with ALPN <https://tools.keycdn.com/http2-test?url=https://halosgho.st>`_
+- `A grade on SecurityHeaders <https://securityheaders.io/?q=https://halosgho.st/>`_ (Will be upgraded to A+ when I deploy PKP when I redeploy my webserver)
