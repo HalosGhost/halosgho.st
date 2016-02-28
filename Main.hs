@@ -7,6 +7,7 @@ import qualified Web.Scotty                           as Web
 import qualified Web.Scotty.TLS                       as Web
 import           Lucid.Base
 import           Lucid.Html5
+import qualified Lucid.Svg                            as Svg
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import           Network.Wai.Middleware.ETag          (etag, defaultETagContext
                                                       ,MaxAge(..))
@@ -47,6 +48,18 @@ secHdrs = do Web.setHeader "strict-transport-security"
                            "1; mode=block"
              Web.setHeader "x-content-type-options"
                            "nosniff"
+
+hlogo :: Svg.Svg ()
+hlogo = Svg.svg11_ $ do
+   Svg.symbol_ [ Svg.id_ "hlogo"
+               , Svg.viewBox_ "0 0 20 20"
+               , Svg.preserveAspectRatio_ "xMinYMin"
+               ] $ do
+     Svg.rect_ [Svg.x_ "35%", Svg.y_ "0%",  Svg.width_ "30%", Svg.height_ "30%"]
+     Svg.rect_ [Svg.x_ "70%", Svg.y_ "35%", Svg.width_ "30%", Svg.height_ "30%"]
+     Svg.rect_ [Svg.x_ "0%",  Svg.y_ "70%", Svg.width_ "30%", Svg.height_ "30%"]
+     Svg.rect_ [Svg.x_ "35%", Svg.y_ "70%", Svg.width_ "30%", Svg.height_ "30%"]
+     Svg.rect_ [Svg.x_ "70%", Svg.y_ "70%", Svg.width_ "30%", Svg.height_ "30%"]
 
 main :: IO ()
 main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
@@ -118,15 +131,11 @@ main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
            footer_ $ do p_ [style_ "float: left;"] $ do
                          "Sam Stuewe © 2014–2015. See the source of this "
                          "website "; gh "halosgho.st" "here"; "."
-                        hlogo
+                        hLink $ Svg.with pLg [Svg.width_ "20", Svg.height_ "20"]
+           hlogo
      where gh n n' = a_ [href_ $ mconcat [b, n]] n'
            b       = "https://github.com/HalosGhost/"
            adr     = "http://adarkroom.doublespeakgames.com/"
-           target  = "window.location='http://www.catb.org/hacker-emblem/'"
-           hlogo   = do p_ ""; table_ [ onclick_ target
-                                      , style_ "cursor: pointer;"] $ do
-                                    tr_ $ do dead;  alive; dead
-                                    tr_ $ do dead;  dead;  alive
-                                    tr_ $ do alive; alive; alive
-           dead    = td_ ""
-           alive   = td_ [class_ "alive"] ""
+           pLg     = Svg.svg11_ $ Svg.use_ [Svg.xlinkHref_ "#hlogo"]
+           hLink   = a_ [href_ target, style_ "float:right;padding-top:18px;"]
+           target  = "http://www.catb.org/hacker-emblem/"

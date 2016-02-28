@@ -25,6 +25,7 @@ executable hgweb
                     wai-middleware-static >= 0.8.0   && < 0.9,
                     wai-middleware-etag   >= 0.1.1   && < 0.2,
                     lucid                 >= 2.9.2   && < 2.10,
+                    lucid-svg             >= 0.6     && < 0.7,
                     text                  >= 1.2.1.3 && < 1.3
 
 executable referrer
