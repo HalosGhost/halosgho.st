@@ -51,10 +51,8 @@ secHdrs = do Web.setHeader "strict-transport-security"
 
 hlogo :: Svg.Svg ()
 hlogo = Svg.svg11_ $ do
-   Svg.symbol_ [ Svg.id_ "hlogo"
-               , Svg.viewBox_ "0 0 20 20"
-               , Svg.preserveAspectRatio_ "xMinYMin"
-               ] $ do
+   Svg.symbol_ [ Svg.id_ "hlogo", Svg.viewBox_ "0 0 20 20"
+               , Svg.preserveAspectRatio_ "xMinYMin"] $ do
      Svg.rect_ [Svg.x_ "35%", Svg.y_ "0%",  Svg.width_ "30%", Svg.height_ "30%"]
      Svg.rect_ [Svg.x_ "70%", Svg.y_ "35%", Svg.width_ "30%", Svg.height_ "30%"]
      Svg.rect_ [Svg.x_ "0%",  Svg.y_ "70%", Svg.width_ "30%", Svg.height_ "30%"]
