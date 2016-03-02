@@ -8,7 +8,7 @@ import qualified Web.Scotty.TLS                       as Web
 import           Lucid.Base
 import           Lucid.Html5
 import qualified Lucid.Svg                            as Svg
-import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import           Network.Wai.Middleware.RequestLogger (logStdout)
 import           Network.Wai.Middleware.ETag          (etag, defaultETagContext
                                                       ,MaxAge(..))
 import           Network.Wai.Middleware.Gzip          (gzip, gzipFiles, def
