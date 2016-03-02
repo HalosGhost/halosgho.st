@@ -48,9 +48,9 @@ secHdrs = do
   Web.setHeader "x-content-type-options"    "nosniff"
 
 hlogo :: Svg.Svg ()
-hlogo = Svg.svg11_ $ do
-  Svg.symbol_ [ Svg.id_ "hlogo", Svg.viewBox_ "0 0 20 20"
-              , Svg.preserveAspectRatio_ "xMinYMin"] $ do
+hlogo = Svg.with (Svg.svg11_ content) [Svg.width_ "1", Svg.height_ "1"] where
+  content = Svg.symbol_ [ Svg.id_ "hlogo", Svg.viewBox_ "0 0 20 20"
+                        , Svg.preserveAspectRatio_ "xMinYMin"] $ do
     Svg.rect_ [Svg.x_ "35%", Svg.y_ "0%",  Svg.width_ "30%", Svg.height_ "30%"]
     Svg.rect_ [Svg.x_ "70%", Svg.y_ "35%", Svg.width_ "30%", Svg.height_ "30%"]
     Svg.rect_ [Svg.x_ "0%",  Svg.y_ "70%", Svg.width_ "30%", Svg.height_ "30%"]
@@ -116,7 +116,8 @@ handleRoot = Web.get "/" $ do
   where gh n n' = a_ [href_ $ mconcat [b, n]] n'
         b       = "https://github.com/HalosGhost/"
         adr     = "http://adarkroom.doublespeakgames.com/"
-        pLg     = Svg.svg11_ $ Svg.use_ [Svg.xlinkHref_ "#hlogo"]
+        pLg     = Svg.svg11_ $ Svg.use_ [ Svg.xlinkHref_ "#hlogo"
+                                        , Svg.height_ "100%"]
         hLink   = a_ [id_ "hlink", href_ target]
         target  = "http://www.catb.org/hacker-emblem/"
 
