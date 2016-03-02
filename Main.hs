@@ -129,7 +129,7 @@ handleFiles = do
 
 main :: IO ()
 main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
-  Web.middleware logStdoutDev
+  Web.middleware logStdout
   Web.middleware . gzip $ def { gzipFiles = GzipCompress }
   Web.middleware . staticPolicy $ noDots >-> addBase "assets"
   Web.middleware . etag ctx $ MaxAgeSeconds 604800
