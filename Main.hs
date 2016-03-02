@@ -15,6 +15,7 @@ import           Network.Wai.Middleware.Gzip          (gzip, gzipFiles, def
                                                       ,GzipFiles(GzipCompress))
 import           Network.Wai.Middleware.Static        (addBase, noDots
                                                       ,staticPolicy, (>->))
+import           Network.Wai.Middleware.ForceSSL      (forceSSL)
 import qualified Network.TLS                          as TLS
 import           Network.TLS.Extra                    as TLSExtra
 import           Network.Wai.Handler.WarpTLS          (certFile, keyFile
@@ -130,6 +131,7 @@ handleFiles = do
 main :: IO ()
 main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
   Web.middleware logStdout
+  Web.middleware forceSSL
   Web.middleware . gzip $ def { gzipFiles = GzipCompress }
   Web.middleware . staticPolicy $ noDots >-> addBase "assets"
   Web.middleware . etag ctx $ MaxAgeSeconds 604800
