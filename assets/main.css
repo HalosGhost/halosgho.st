@@ -1,0 +1,15 @@
+#main{
+    margin:5% 15%;
+    font-family:sans;
+    text-align:justify;
+    background:#eee;
+}li{
+    margin-bottom:1em;
+}footer{
+    border-top:1px solid;
+}#hlink{
+    float:right;
+    padding-top:18px;
+}#runner{
+    float:left;
+}
