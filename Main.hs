@@ -127,7 +127,9 @@ handleFiles = do
     f <- Web.param "file"; secHdrs; Web.file $ mconcat ["media/",f]
 
   Web.get "/assets/:file" $ do
-    f <- Web.param "file"; secHdrs; Web.file $ mconcat ["assets/",f]
+    f <- Web.param "file"
+    secHdrs; Web.setHeader "vary" "accept-encoding"
+    Web.file $ mconcat ["assets/",f]
 
 main :: IO ()
 main = defaultETagContext True >>= \ctx -> Web.scottyTLSSettings 443 tlsSet $ do
