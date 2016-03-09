@@ -51,11 +51,11 @@ hlogo :: Svg.Svg ()
 hlogo = Svg.with (Svg.svg11_ content) [Svg.width_ "1", Svg.height_ "1"] where
   content = Svg.symbol_ [ Svg.id_ "hlogo", Svg.viewBox_ "0 0 20 20"
                         , Svg.preserveAspectRatio_ "xMinYMin"] $ do
-    fmap rect $ zip ["35%", "70%", "0%", "35%", "70%"]
-                    ["0%", "35%", "70%", "70%", "70%"]
-    where rect (x,y) =
-            Svg.rect_ [ Svg.x_ x, Svg.y_ y, Svg.width_ "30%", Svg.height_ "30%"
-                      , Svg.fill_ "inherit"]
+    mapM_ rect $ zip ["35%", "70%", "0%", "35%", "70%"]
+                     ["0%", "35%", "70%", "70%", "70%"]
+  rect (x,y) =
+    Svg.rect_ [ Svg.x_ x, Svg.y_ y, Svg.width_ "30%", Svg.height_ "30%"
+              , Svg.fill_ "inherit"]
 
 header :: Html ()
 header = head_ $ do
