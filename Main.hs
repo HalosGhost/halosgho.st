@@ -71,6 +71,7 @@ handleRoot = Web.get "/" $ do
     doctype_; html_ [lang_ "en"] $ do
       header
       body_ [id_ "main"] $ do
+        hlogo
         header_ $ h1_ "Sam Stuewe (halosghost)"
         main_ $ do
           h2_ "Background"
@@ -112,7 +113,6 @@ handleRoot = Web.get "/" $ do
                       "Sam Stuewe © 2014–2016. See the source of this "
                       "website "; gh "halosgho.st" "here"; "."
                      hLink $ Svg.with pLg [Svg.width_ "20", Svg.height_ "20"]
-        hlogo
   where gh n n' = a_ [href_ $ mconcat [b, n]] n'
         b       = "https://github.com/HalosGhost/"
         adr     = "http://adarkroom.doublespeakgames.com/"
