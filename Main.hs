@@ -46,6 +46,7 @@ secHdrs = do
   Web.setHeader "x-frame-options"           "SAMEORIGIN"
   Web.setHeader "x-xss-protection"          "1;mode=block"
   Web.setHeader "x-content-type-options"    "nosniff"
+  Web.setHeader "referrer-policy"           "no-referrer"
 
 hlogo :: Svg.Svg ()
 hlogo = Svg.with (Svg.svg11_ content) [Svg.width_ "1", Svg.height_ "1"] where
@@ -62,6 +63,7 @@ header = head_ $ do
   title_ "/home/halosghost"
   meta_ [charset_ "utf-8"]
   meta_ [name_ "viewport", content_ "width=device-width,initial-scale=1"]
+  meta_ [name_ "referrer", content_ "never"]
   link_ [rel_ "stylesheet", type_ "text/css", href_ "/assets/main.css"]
 
 handleRoot :: Web.ScottyM ()
