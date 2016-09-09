@@ -27,9 +27,9 @@ check_deps () {
         } || check_file "$i"
     done
 
-    hdrs=(getopt stdio signal stdint inttypes stdlib 'curl/curl' 'sys/stat'
-          string fcntl unistd errno time jansson 'linux/limits' libgen stdbool
-          stdnoreturn)
+    hdrs=(getopt stdio signal stdint inttypes stdlib 'curl/curl' libgen
+          string fcntl unistd errno time 'lwan/lwan' 'lwan/lwan-serve-files'
+          stdbool stdnoreturn)
 
     for i in "${hdrs[@]}"; do
         fh=$($i_cc -c -o tm -x c - <<< "#include <$i.h>" &> /dev/null; echo $?)
@@ -51,7 +51,7 @@ check_deps () {
         [[ "$fc" != 0 ]] && exit 1
     done
 
-    for i in curl jansson; do
+    for i in lwan; do
         check_file "/usr/lib/lib$i.so"
     done
 }
