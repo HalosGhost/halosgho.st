@@ -5,17 +5,6 @@ proj_list_gen (coro_t * coro) {
 
     struct project * proj = coro_get_data(coro);
 
-    struct project proj_list [] = {
-        { "shaman",
-          "https://github.com/HalosGhost/shaman",
-          "a simple CLI weather program",
-        },
-        { "pbpst",
-          "https://github.com/HalosGhost/pbpst",
-          "a simple and featureful client for pb deployements",
-        }
-    };
-
     size_t len = sizeof proj_list / sizeof(struct project);
     for ( size_t i = 0; i < len; ++ i ) {
         proj->name = proj_list[i].name;
@@ -45,17 +34,10 @@ root_handler (lwan_request_t * req, lwan_response_t * resp, void * data) {
         TPL_VAR_SENTINEL
     };
 
-    lwan_tpl_compile_file("index.htm.mustache", tpl_desc);
-
-    const char msg [] =
-      "<!DOCTYPE html>"
-      "<html>"
-        "<head><title>/home/halosghost</title></head>"
-        "<body><h1>Sam Stuewe (HalosGhost)</h1></body>"
-      "</html>";
-
+    lwan_tpl_t * tpl = lwan_tpl_compile_file("index.htm.mustache", tpl_desc);
+    lwan_tpl_apply_with_buffer(tpl, resp->buffer, proj_list);
     resp->mime_type = "text/html";
-    strbuf_set_static(resp->buffer, msg, sizeof(msg) - 1);
+    lwan_tpl_free(tpl);
 
     return HTTP_OK;
 }

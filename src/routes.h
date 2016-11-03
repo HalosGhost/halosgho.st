@@ -13,3 +13,14 @@ struct project {
     const char * name, * url, * desc;
 };
 
+static struct project proj_list [] = {
+    { "shaman",
+      "https://github.com/HalosGhost/shaman",
+      "a simple CLI weather program",
+    },
+    { "pbpst",
+      "https://github.com/HalosGhost/pbpst",
+      "a simple and featureful client for pb deployements",
+    }
+};
+
