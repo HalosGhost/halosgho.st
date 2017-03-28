@@ -112,7 +112,7 @@ handleRoot = Web.get "/" $ do
                   "Political Science. You can view the full text of my "
                   "honors' thesis on my "; gh "honors_thesis" "GitHub"; "."
         footer_ $ do p_ [id_ "runner"] $ do
-                      "Sam Stuewe © 2014–2016. See the source of this "
+                      "Sam Stuewe © 2014–2017. See the source of this "
                       "website "; gh "halosgho.st" "here"; "."
                      hLink $ Svg.with pLg [Svg.width_ "20", Svg.height_ "20"]
   where gh n n' = a_ [href_ $ mconcat [b, n]] n'
