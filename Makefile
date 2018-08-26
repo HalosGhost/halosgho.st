@@ -5,30 +5,34 @@ LIBDIR  ?= $(DESTDIR)$(PREFIX)/lib
 BINDIR  ?= $(DESTDIR)$(PREFIX)/bin
 ZSHDIR  ?= $(DESTDIR)$(PREFIX)/share/zsh
 BASHDIR ?= $(DESTDIR)$(PREFIX)/share/bash-completion
+LOCDIR  ?= $(DESTDIR)$(PREFIX)/share/locale
 
-.PHONY: all clean gen clang-analyzer cov-build simple install uninstall
+include Makerules
 
-all: dist
-	@tup upd
+.PHONY: all bin clean complexity clang-analyze cov-build install uninstall
 
-clean:
-	@rm -rf -- dist cov-int $(PROGNM).tgz make.sh ./src/*.plist
+all: dist bin
 
-dist:
-	@mkdir -p ./dist
-
-gen: clean
-	@tup generate make.sh
-
-cov-build: gen dist
-	@cov-build --dir cov-int ./make.sh
-	@tar czvf $(PROGNM).tgz cov-int
+bin: dist
+	@(cd src; \
+		$(CC) $(CFLAGS) $(LDFLAGS) $(SOURCES) -o ../dist/$(PROGNM) \
+	)
 
 clang-analyze:
-	@(pushd ./src; clang-check -analyze ./*.c)
+	@(cd ./src; clang-check -analyze ./*.c)
 
-simple: gen dist
-	@./make.sh
+clean:
+	@rm -rf -- dist cov-int $(PROGNM).tgz ./src/*.plist \
+
+complexity:
+	@complexity -h ./src/*
+
+cov-build: clean dist
+	@cov-build --dir cov-int make
+	@tar czvf $(PROGNM).tgz cov-int
+
+dist:
+	@mkdir -p dist
 
 install:
 	@install -Dm755 dist/$(PROGNM)   $(BINDIR)/$(PROGNM)

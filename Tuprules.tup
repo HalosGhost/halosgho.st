@@ -1,4 +1,0 @@
-VERSION = `git describe --long --tags`
-CFLAGS = -g -O3 -fPIE -pie -Weverything -std=c11 -ggdb -D_FORTIFY_SOURCE=2 -fstack-protector-strong -march=native --param=ssp-buffer-size=1 -Wl,-z,relro,-z,now -fsanitize=undefined -fsanitize-trap=undefined
-LDFLAGS = `pkg-config --libs lwan`
-CC = clang
