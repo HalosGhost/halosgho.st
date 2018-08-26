@@ -9,14 +9,10 @@
 static char cwd [PATH_MAX] = { '\0' };
 
 struct page {
-    //char * url, * name, * desc;
     int64_t year;
 };
 
 static const struct lwan_var_descriptor page_template[] = {
-    //TPL_VAR_STR_ESCAPE(struct page, url),
-    //TPL_VAR_STR_ESCAPE(struct page, name),
-    //TPL_VAR_STR_ESCAPE(struct page, desc),
     TPL_VAR_INT(struct page, year),
     TPL_VAR_SENTINEL
 };
@@ -36,25 +32,6 @@ LWAN_HANDLER(index) {
 
     return HTTP_OK;
 }
-
-//LWAN_HANDLER(mustache) {
-//
-//
-    //FILE * f = fopen("index.htm", "r");
-//
-    //fseek(f, 0l, SEEK_END);
-    //size_t size = (size_t )ftell(f);
-    //fseek(f, 0l, SEEK_SET);
-//
-    //char * msg = malloc(size);
-    //size_t res = fread(msg, size, 1, f);
-    //(void )res;
-//
-    //response->mime_type = "text/html; charset=UTF-8";
-    //lwan_strbuf_set_static(response->buffer, msg, size);
-//
-    //return HTTP_OK;
-//}
 
 LWAN_HANDLER(assets) {
 
@@ -86,7 +63,6 @@ main (void) {
 
     const struct lwan_url_map default_map[] = {
         { .prefix = "/",  .handler = LWAN_HANDLER_REF(index) },
-        //{ .prefix = "/assets", .handler = LWAN_HANDLER_REF(assets) },
         { .prefix = NULL }
     };
 
