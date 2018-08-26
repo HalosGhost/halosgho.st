@@ -9,9 +9,9 @@ LOCDIR  ?= $(DESTDIR)$(PREFIX)/share/locale
 
 include Makerules
 
-.PHONY: all bin clean complexity clang-analyze cov-build install uninstall
+.PHONY: all bin clean complexity clang-analyze cov-build res install uninstall
 
-all: dist bin
+all: dist bin res
 
 bin: dist
 	@(cd src; \
@@ -33,6 +33,12 @@ cov-build: clean dist
 
 dist:
 	@mkdir -p dist
+
+res: bin
+	@cp -a --no-preserve=ownership pages dist/
+	@cp -a --no-preserve=ownership files dist/
+	@cp -a --no-preserve=ownership assets dist/
+	@cp -a --no-preserve=ownership $(PROGNM).conf dist/
 
 install:
 	@install -Dm755 dist/$(PROGNM)   $(BINDIR)/$(PROGNM)
