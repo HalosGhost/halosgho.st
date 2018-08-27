@@ -6,8 +6,15 @@
 #include <limits.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <errno.h>
 
-static char cwd [PATH_MAX] = { '\0' };
+#define PRIV_SERVE_FILES(path) \
+    .module = LWAN_MODULE_REF(serve_files), \
+    .args = &(struct lwan_serve_files_settings ){ \
+        .root_path = path, \
+        .serve_precompressed_files = true, \
+        .auto_index = false \
+    } \
 
 struct page {
     int64_t year;
@@ -48,32 +55,47 @@ main (void) {
     struct lwan l;
     lwan_init(&l);
 
-    char * resprime = getcwd(cwd, PATH_MAX - 1);
-    (void )resprime;
+    signed errsv = EXIT_SUCCESS;
 
-    signed res = chdir("pages");
-    (void )res;
+    char cwd [PATH_MAX] = { '\0' };
+    errno = 0;
+    if ( !getcwd(cwd, PATH_MAX - 1) ) {
+        errsv = errno;
+        fprintf(stderr, "Failed to save base directory: %s\n", strerror(errsv));
+        return EXIT_FAILURE;
+    }
+
+    errno = 0;
+    if ( chdir("pages") ) {
+        errsv = errno;
+        fprintf(stderr, "Failed to switch to directory `pages`: %s\n", strerror(errsv));
+        return EXIT_FAILURE;
+    }
 
     page_tpl = lwan_tpl_compile_file("index.htm", page_template);
     if ( !page_tpl ) {
-        fputs("everything's on fire\n", stderr);
+        fputs("Failed to compile template `index.htm`\n", stderr);
+        return EXIT_FAILURE;
     }
 
-    res = chdir(cwd);
+    errno = 0;
+    if ( chdir(cwd) ) {
+        errsv = errno;
+        fprintf(stderr, "Failed to switch to base directory: %s\n", strerror(errsv));
+        return EXIT_FAILURE;
+    }
 
-    const struct lwan_url_map default_map[] = {
+    const struct lwan_url_map default_map [] = {
         { .prefix = "/",  .handler = LWAN_HANDLER_REF(index) },
-        { .prefix = "/assets", SERVE_FILES("./assets") },
-        { .prefix = "/media", SERVE_FILES("./media") },
+        { .prefix = "/assets", PRIV_SERVE_FILES("./assets") },
+        { .prefix = "/media", PRIV_SERVE_FILES("./media") },
         { .prefix = NULL }
     };
 
     lwan_set_url_map(&l, default_map);
-
     lwan_main_loop(&l);
-
     lwan_tpl_free(page_tpl);
-
     lwan_shutdown(&l);
+
     return EXIT_SUCCESS;
 }
