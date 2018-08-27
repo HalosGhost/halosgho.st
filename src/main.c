@@ -28,17 +28,16 @@ LWAN_HANDLER(index) {
     };
 
     response->mime_type = "text/html; charset=UTF-8";
+    response->headers = (struct lwan_key_value [] ){
+        { .key = "content-security-policy", .value = "default-src 'self'" },
+        { .key = "x-frame-options", .value = "SAMEORIGIN" },
+        { .key = "x-xss-protection", .value = "1; mode=block" },
+        { .key = "x-content-type-options", .value = "nosniff" },
+        { .key = "referrer-policy", .value = "no-referrer" },
+    };
+
     lwan_tpl_apply_with_buffer(page_tpl, response->buffer, &pg);
 
-    return HTTP_OK;
-}
-
-LWAN_HANDLER(assets) {
-
-    signed res = chdir("assets");
-    (void )res;
-
-    lwan_strbuf_set_static(response->buffer, "stuff", 5);
     return HTTP_OK;
 }
 
