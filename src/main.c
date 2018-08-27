@@ -1,5 +1,6 @@
 #include <lwan/lwan.h>
 #include <lwan/lwan-template.h>
+#include <lwan/lwan-mod-serve-files.h>
 #include <time.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -62,6 +63,8 @@ main (void) {
 
     const struct lwan_url_map default_map[] = {
         { .prefix = "/",  .handler = LWAN_HANDLER_REF(index) },
+        { .prefix = "/assets", SERVE_FILES("./assets") },
+        { .prefix = "/media", SERVE_FILES("./media") },
         { .prefix = NULL }
     };
 
