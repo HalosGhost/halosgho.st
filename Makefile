@@ -36,7 +36,7 @@ dist:
 
 res: bin
 	@cp -a --no-preserve=ownership pages dist/
-	@cp -a --no-preserve=ownership files dist/
+	@cp -a --no-preserve=ownership media dist/
 	@cp -a --no-preserve=ownership assets dist/
 	@cp -a --no-preserve=ownership $(PROGNM).conf dist/
 
