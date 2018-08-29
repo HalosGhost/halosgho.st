@@ -1,12 +1,4 @@
-#include <lwan/lwan.h>
-#include <lwan/lwan-template.h>
-#include <lwan/lwan-mod-serve-files.h>
-#include <time.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <errno.h>
+#include "main.h"
 
 #define PRIV_SERVE_FILES(path) \
     .module = LWAN_MODULE_REF(serve_files), \
@@ -57,14 +49,6 @@ main (void) {
 
     signed errsv = EXIT_SUCCESS;
 
-    char cwd [PATH_MAX] = { '\0' };
-    errno = 0;
-    if ( !getcwd(cwd, PATH_MAX - 1) ) {
-        errsv = errno;
-        fprintf(stderr, "Failed to save base directory: %s\n", strerror(errsv));
-        return EXIT_FAILURE;
-    }
-
     errno = 0;
     if ( chdir("pages") ) {
         errsv = errno;
@@ -79,7 +63,7 @@ main (void) {
     }
 
     errno = 0;
-    if ( chdir(cwd) ) {
+    if ( chdir(PREFIX) ) {
         errsv = errno;
         fprintf(stderr, "Failed to switch to base directory: %s\n", strerror(errsv));
         return EXIT_FAILURE;
