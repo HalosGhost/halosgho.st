@@ -5,6 +5,7 @@ usage () {
     printf "Options:\n"
     printf "  --cc='COMP'       Use COMP for compiler (default: clang)\n"
     printf "  --cflags='FLAGS'  Set CFLAGS (cf. Makerules for defaults)\n"
+    printf "  --prefix='PATH'   Set PREFIX (default: /srv/http)\n"
     printf "  --reset-config    Reset configuration to the defaults\n"
 }
 
@@ -19,7 +20,7 @@ check_deps () {
     cur_cflags=($(grep --color=never CFLAGS Makerules | sed 's/CFLAGS = //'))
 
     pushd ./src &> /dev/null
-    hdrs=($("$i_cc" -M main.c | sed -e 's|.*:||' -e 's|\\||' | tr -d '\n'))
+    hdrs=($("$i_cc" -M main.h | sed -e 's|.*:||' -e 's|\\||' | tr -d '\n'))
 
     len=0
     for i in make "$i_cc" mkdir install rm "${hdrs[@]}" "$cur_cflags[@]"; do
@@ -59,7 +60,7 @@ check_deps () {
         [[ "$fc" != 0 ]] && exit 1
     done
 
-    for i in curl jansson; do
+    for i in lwan; do
         check_file "/usr/lib/lib$i.so" "$len"
     done
 }
@@ -86,6 +87,8 @@ default_config () {
 
     update_makerule CFLAGS "${def_cflags[*]}"
     update_makerule CC 'clang'
+    update_makevar  PREFIX '/srv/http'
+    update          PREFIX '"/srv/http"'
 }
 
 show_makerule () {
@@ -100,14 +103,19 @@ show_value () {
 show_config () {
     show_makerule CFLAGS
     show_makerule CC
+    show_value    PREFIX PREFIX
 }
 
 for i in "$@"; do
     case "$i" in
         --cc=*)         update_makerule CC "${i#*=}"; shift;;
         --cflags=*)     update_makerule CFLAGS "${i#*=}"; shift;;
+        --prefix=*)     pref="${i#*=}"
+                        update          PREFIX "\"$pref\"";
+                        update_makevar  PREFIX "$pref";
+                        shift;;
         --help)         usage; exit 0;;
-        --reset-config) default_config; break;
+        --reset-config) default_config; break;;
     esac
 done
 
