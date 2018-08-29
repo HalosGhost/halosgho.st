@@ -34,6 +34,7 @@ LWAN_HANDLER(index) {
         { .key = "x-xss-protection", .value = "1; mode=block" },
         { .key = "x-content-type-options", .value = "nosniff" },
         { .key = "referrer-policy", .value = "no-referrer" },
+        { .key = 0, .value = 0 }
     };
 
     lwan_tpl_apply_with_buffer(page_tpl, response->buffer, &pg);
