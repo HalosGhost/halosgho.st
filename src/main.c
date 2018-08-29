@@ -1,24 +1,5 @@
 #include "main.h"
 
-#define PRIV_SERVE_FILES(path) \
-    .module = LWAN_MODULE_REF(serve_files), \
-    .args = &(struct lwan_serve_files_settings ){ \
-        .root_path = path, \
-        .serve_precompressed_files = true, \
-        .auto_index = false \
-    } \
-
-struct page {
-    int64_t year;
-};
-
-static const struct lwan_var_descriptor page_template[] = {
-    TPL_VAR_INT(struct page, year),
-    TPL_VAR_SENTINEL
-};
-
-static struct lwan_tpl * page_tpl;
-
 LWAN_HANDLER(index) {
 
     time_t thetime = time(NULL);
@@ -28,14 +9,7 @@ LWAN_HANDLER(index) {
     };
 
     response->mime_type = "text/html; charset=UTF-8";
-    response->headers = (struct lwan_key_value [] ){
-        { .key = "content-security-policy", .value = "default-src 'self'" },
-        { .key = "x-frame-options", .value = "SAMEORIGIN" },
-        { .key = "x-xss-protection", .value = "1; mode=block" },
-        { .key = "x-content-type-options", .value = "nosniff" },
-        { .key = "referrer-policy", .value = "no-referrer" },
-        { .key = 0, .value = 0 }
-    };
+    response->headers = headers;
 
     lwan_tpl_apply_with_buffer(page_tpl, response->buffer, &pg);
 
