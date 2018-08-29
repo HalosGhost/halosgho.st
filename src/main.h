@@ -40,7 +40,7 @@ static struct lwan_key_value headers [] = {
     { .key = "x-xss-protection", .value = "1; mode=block" },
     { .key = "x-content-type-options", .value = "nosniff" },
     { .key = "referrer-policy", .value = "no-referrer" },
-    { .key = 0, .value = 0 }
+    { .key = NULL, .value = NULL }
 };
 
 #endif // MAIN_H
