@@ -1,5 +1,5 @@
 PROGNM  =  hgweb
-PREFIX  ?= /usr/local
+PREFIX  ?= /srv/http
 DOCDIR  ?= $(DESTDIR)$(PREFIX)/share/man
 LIBDIR  ?= $(DESTDIR)$(PREFIX)/lib
 BINDIR  ?= $(DESTDIR)$(PREFIX)/bin
