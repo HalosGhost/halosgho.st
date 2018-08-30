@@ -9,9 +9,9 @@ LOCDIR  ?= $(DESTDIR)$(PREFIX)/share/locale
 
 include Makerules
 
-.PHONY: all bin clean complexity clang-analyze cov-build res install uninstall
+.PHONY: all bin clean complexity clang-analyze cov-build res minify install uninstall
 
-all: dist bin res
+all: dist bin res minify
 
 bin: dist
 	@(cd src; \
@@ -39,6 +39,12 @@ res: bin
 	@cp -a --no-preserve=ownership media dist/
 	@cp -a --no-preserve=ownership assets dist/
 	@cp -a --no-preserve=ownership $(PROGNM).conf dist/
+
+minify: res
+	@mv dist/assets/main.css dist/assets/main.css.bak
+	@tr -d '\t\n' < dist/assets/main.css.bak > dist/assets/main.css
+	@printf '\n' >> dist/assets/main.css
+	@rm dist/assets/main.css.bak
 
 install:
 	@install -Dm755 dist/$(PROGNM)   $(BINDIR)/$(PROGNM)
