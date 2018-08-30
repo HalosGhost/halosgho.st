@@ -34,17 +34,20 @@ cov-build: clean dist
 dist:
 	@mkdir -p dist
 
-res: bin
+res: dist
 	@cp -a --no-preserve=ownership pages dist/
 	@cp -a --no-preserve=ownership media dist/
 	@cp -a --no-preserve=ownership assets dist/
 	@cp -a --no-preserve=ownership $(PROGNM).conf dist/
 
 minify: res
-	@mv dist/assets/main.css dist/assets/main.css.bak
-	@tr -d '\t\n' < dist/assets/main.css.bak > dist/assets/main.css
-	@printf '\n' >> dist/assets/main.css
-	@rm dist/assets/main.css.bak
+	@(cd dist; \
+	for i in 'assets/main.css' 'pages/index.htm'; do \
+		mv "$$i" "$$i".bak; \
+		tr -d '\t\n' < "$$i".bak > "$$i"; \
+		printf '\n' >> "$$i"; \
+		rm "$$i".bak; \
+	done)
 
 install:
 	@install -Dm755 dist/$(PROGNM)   $(BINDIR)/$(PROGNM)
