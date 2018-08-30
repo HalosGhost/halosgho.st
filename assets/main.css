@@ -1,16 +1,16 @@
 #main{
-    margin:1em auto;
-    padding:1em;
-    max-width:40em;
-    font-family:sans;
-    background:#eee;
-}li{
-    margin-bottom:1em;
-}footer{
-    border-top:1px solid;
-}#hlink{
-    float:right;
-    padding-top:18px;
-}#runner{
-    float:left;
+	margin:1em auto;
+	padding:1em;
+	max-width:40em;
+	font-family:sans;
+	background:#eee;
+}
+li{
+	margin-bottom:1em;
+}
+footer{
+	border-top:1px solid;
+}
+#runner{
+	float:left;
 }
