@@ -44,8 +44,7 @@ minify: res
 	@(cd dist; \
 	for i in 'assets/main.css' 'pages/index.htm'; do \
 		mv "$$i" "$$i".bak; \
-		tr -d '\t\n' < "$$i".bak > "$$i"; \
-		printf '\n' >> "$$i"; \
+		sed -E 's/^\s+//g' "$$i".bak | tr -d '\n' > "$$i"; \
 		rm "$$i".bak; \
 	done)
 
