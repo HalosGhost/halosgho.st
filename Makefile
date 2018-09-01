@@ -1,15 +1,12 @@
 PROGNM  =  hgweb
 PREFIX  ?= /srv/http
-DOCDIR  ?= $(DESTDIR)$(PREFIX)/share/man
-LIBDIR  ?= $(DESTDIR)$(PREFIX)/lib
-BINDIR  ?= $(DESTDIR)$(PREFIX)/bin
-ZSHDIR  ?= $(DESTDIR)$(PREFIX)/share/zsh
-BASHDIR ?= $(DESTDIR)$(PREFIX)/share/bash-completion
-LOCDIR  ?= $(DESTDIR)$(PREFIX)/share/locale
+MAINDIR ?= $(DESTDIR)$(PREFIX)
+SVCDIR  ?= $(DESTDIR)/usr/lib/systemd/system/
+BINDIR  ?= $(DESTDIR)/usr/bin
 
 include Makerules
 
-.PHONY: all bin clean complexity clang-analyze cov-build res minify install uninstall
+.PHONY: all bin clean complexity clang-analyze cov-build res minify install
 
 all: dist bin res minify
 
@@ -18,7 +15,7 @@ bin: dist
 		$(CC) $(CFLAGS) $(LDFLAGS) $(SOURCES) -o ../dist/$(PROGNM) \
 	)
 	@(cd src; \
-		$(CC) $(CFLAGS) $(LDFLAGS) redirector.c -o ../dist/redirector \
+		$(CC) $(CFLAGS) $(LDFLAGS) redirector.c -o ../dist/hgredirector \
 	)
 
 clang-analyze:
@@ -51,10 +48,10 @@ minify: res
 		rm "$$i".bak; \
 	done)
 
-install:
-	@install -Dm755 dist/$(PROGNM)   $(BINDIR)/$(PROGNM)
-
-uninstall:
-	@rm -f $(BINDIR)/$(PROGNM)
+install: all
+	@mkdir -p $(BINDIR) $(SVCDIR) $(MAINDIR)
+	@cp -a --no-preserve=ownership dist/* $(MAINDIR)/
+	@cp -a --no-preserve=ownership svc/* $(SVCDIR)/
+	@install -Dm755 website $(BINDIR)/website
 
 include Makeeaster
