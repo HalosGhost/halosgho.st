@@ -24,6 +24,7 @@ clang-analyze:
 
 clean:
 	@rm -rf -- dist cov-int $(PROGNM).tgz ./src/*.plist \
+	@rm -rf -- bld/{lwan-git,acme-client-git,hitch-git,pkg,src,packages,halosgho.st}
 
 complexity:
 	@complexity -h ./src/*
