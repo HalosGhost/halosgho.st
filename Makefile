@@ -7,7 +7,7 @@ TARGET  ?= oceanus.halosgho.st
 
 include Makerules
 
-.PHONY: all bin clean complexity clang-analyze cov-build res minify install
+.PHONY: all bin clean complexity clang-analyze cov-build res minify install uninstall
 
 all: dist bin res minify
 
@@ -70,5 +70,11 @@ deploy:
 	scp -r packages $(TARGET):/home/halosghost/; \
 	#ssh $(TARGET) sudo pacman -U packages/*; \
 	)
+
+uninstall:
+	@rm -rf -- $(MAINDIR)/{assets,media,pages,.well-known}
+	@rm -f  -- $(MAINDIR)/{$(PROGNM),hgredirector}{,.conf}
+	@rm -f  -- $(SVCDIR)/{$(PROGNM),hgredirector}.service
+	@rm -f  -- $(BINDIR)/website
 
 include Makeeaster
