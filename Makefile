@@ -17,6 +17,9 @@ bin: dist
 	@(cd src; \
 		$(CC) $(CFLAGS) $(LDFLAGS) $(SOURCES) -o ../dist/$(PROGNM) \
 	)
+	@(cd src; \
+		$(CC) $(CFLAGS) $(LDFLAGS) redirector.c -o ../dist/redirector \
+	)
 
 clang-analyze:
 	@(cd ./src; clang-check -analyze ./*.c)
@@ -32,13 +35,13 @@ cov-build: clean dist
 	@tar czvf $(PROGNM).tgz cov-int
 
 dist:
-	@mkdir -p dist
+	@mkdir -p dist/.well-known/acme-challenge
 
 res: dist
 	@cp -a --no-preserve=ownership pages dist/
 	@cp -a --no-preserve=ownership media dist/
 	@cp -a --no-preserve=ownership assets dist/
-	@cp -a --no-preserve=ownership $(PROGNM).conf dist/
+	@cp -a --no-preserve=ownership conf/* dist/
 
 minify: res
 	@(cd dist; \
