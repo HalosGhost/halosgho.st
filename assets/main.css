@@ -1,8 +1,8 @@
 #main{
     margin:1em auto;
     padding:1em;
-    max-width:40em;
-    font-family:sans;
+    max-width:38em;
+    font:1em/1.62em sans;
     background:#eee;
 }
 li{
