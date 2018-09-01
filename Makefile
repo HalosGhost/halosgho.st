@@ -3,6 +3,7 @@ PREFIX  ?= /srv/http
 MAINDIR ?= $(DESTDIR)$(PREFIX)
 SVCDIR  ?= $(DESTDIR)/usr/lib/systemd/system/
 BINDIR  ?= $(DESTDIR)/usr/bin
+TARGET  ?= oceanus.halosgho.st
 
 include Makerules
 
@@ -53,5 +54,20 @@ install: all
 	@cp -a --no-preserve=ownership dist/* $(MAINDIR)/
 	@cp -a --no-preserve=ownership svc/* $(SVCDIR)/
 	@install -Dm755 website $(BINDIR)/website
+
+deploy:
+	@(pushd bld; \
+	mkdir -p packages; \
+	for i in lwan-git hitch-git acme-client-git; do \
+		cower -df "$$i" --ignorerepo &> /dev/null; \
+		pushd "$$i"; \
+		PKGDEST=../packages makepkg -s; \
+		popd; \
+		echo "$$i: built"; \
+	done; \
+	PKGDEST=packages makepkg -s; \
+	scp -r packages $(TARGET):/home/halosghost/; \
+	#ssh $(TARGET) sudo pacman -U packages/*; \
+	)
 
 include Makeeaster
