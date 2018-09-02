@@ -1,7 +1,7 @@
 # Maintainer: Sam Stuewe <samuel dot stuewe at gmail dot com>
 
 pkgname=hgweb-git
-pkgver=0.r118.82187ef
+pkgver=0
 pkgrel=1
 pkgdesc='my website'
 url='https://github.com/HalosGhost/halosgho.st'
