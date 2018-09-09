@@ -16,6 +16,11 @@ LWAN_HANDLER(index) {
     return HTTP_OK;
 }
 
+LWAN_HANDLER(projects) {
+
+    return HTTP_OK;
+}
+
 signed
 main (void) {
 
@@ -46,6 +51,7 @@ main (void) {
 
     const struct lwan_url_map default_map [] = {
         { .prefix = "/",  .handler = LWAN_HANDLER_REF(index) },
+        { .prefix = "/projects",  .handler = LWAN_HANDLER_REF(projects) },
         { .prefix = "/assets", PRIV_SERVE_FILES("./assets") },
         { .prefix = "/media", PRIV_SERVE_FILES("./media") },
         { .prefix = NULL }
