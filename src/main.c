@@ -18,6 +18,16 @@ LWAN_HANDLER(index) {
 
 LWAN_HANDLER(projects) {
 
+    const char * name = lwan_request_get_query_param(request, "name");
+    if ( name ) {
+        lwan_strbuf_set_static(response->buffer, name, strlen(name));
+    } else {
+        lwan_strbuf_set_static(response->buffer, "index", 5);
+    }
+
+    response->mime_type = "text/plain";
+    response->headers = headers;
+
     return HTTP_OK;
 }
 
