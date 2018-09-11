@@ -17,7 +17,7 @@ Design Characteristics
 ----------------------
 
 * `Secure Header Configuration <https://securityheaders.com/?q=http%3A%2F%2Fhalosgho.st&followRedirects=on>`_ (``A+`` planned)
-* `Secure TLS Configuration <https://www.ssllabs.com/ssltest/analyze.html?d=halosgho.st&latest>`_ (``A+`` planned)
+* `Secure TLS Configuration <https://www.ssllabs.com/ssltest/analyze.html?d=halosgho.st&latest>`_
 * `Good Accessibility <http://wave.webaim.org/report#/http://halosgho.st>`_
 * `High Performance <https://gtmetrix.com/reports/halosgho.st/dnjemTfY>`_
 * `Valid, Modern, Semantic Markup <https://validator.nu/?doc=https%3A%2F%2Fhalosgho.st>`_
