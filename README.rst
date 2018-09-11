@@ -16,7 +16,7 @@ All running on Arch Linux using `nftables <https://netfilter.org/projects/nftabl
 Design Characteristics
 ----------------------
 
-* `Secure Header Configuration <https://securityheaders.com/?q=http%3A%2F%2Fhalosgho.st&followRedirects=on>`_ (``A+`` planned)
+* `Secure Header Configuration <https://securityheaders.com/?q=http%3A%2F%2Fhalosgho.st&followRedirects=on>`_
 * `Secure TLS Configuration <https://www.ssllabs.com/ssltest/analyze.html?d=halosgho.st&latest>`_
 * `Good Accessibility <http://wave.webaim.org/report#/http://halosgho.st>`_
 * `High Performance <https://gtmetrix.com/reports/halosgho.st/dnjemTfY>`_
