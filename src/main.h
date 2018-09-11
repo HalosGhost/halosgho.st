@@ -42,7 +42,8 @@ static struct lwan_key_value headers [] = {
     { .key = "x-content-type-options", .value = "nosniff" },
     { .key = "referrer-policy", .value = "no-referrer" },
     { .key = "expect-ct", .value = "max-age=30, report-uri=\"halosghost.report-uri.com\"" },
-    //{ .key = "strict-transport-security", .value = "max-age=86400; includeSubDomains" },
+    { .key = "strict-transport-security", .value = "max-age=31536000; includeSubDomains" },
+    //{ .key = "feature-policy", .value = "*: none" },
     { .key = NULL, .value = NULL }
 };
 
