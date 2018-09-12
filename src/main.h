@@ -1,20 +1,14 @@
 #if !defined(MAIN_H)
 #define MAIN_H
 
-#include <lwan/lwan.h>
-#include <lwan/lwan-template.h>
-#include <lwan/lwan-mod-serve-files.h>
-#include <lwan/lwan-mod-redirect.h>
-#include <time.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <errno.h>
+#include "common.h"
 
 #pragma once
 
 #define PREFIX "/srv/http"
+
+LWAN_HANDLER_DECLARE(projects);
+LWAN_HANDLER_DECLARE(index);
 
 static struct lwan_tpl * page_tpl;
 
@@ -47,3 +41,4 @@ static struct lwan_key_value headers [] = {
 };
 
 #endif // MAIN_H
+

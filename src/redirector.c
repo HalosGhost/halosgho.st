@@ -1,4 +1,4 @@
-#include "main.h"
+#include "common.h"
 
 signed
 main (void) {
