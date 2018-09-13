@@ -20,7 +20,7 @@ check_deps () {
     cur_cflags=($(grep --color=never CFLAGS Makerules | sed 's/CFLAGS = //'))
 
     pushd ./src &> /dev/null
-    hdrs=($("$i_cc" -M main.h | sed -e 's|.*:||' -e 's|\\||' | tr -d '\n'))
+    hdrs=($("$i_cc" -M common.h | sed -e 's|.*:||' -e 's|\\||' | tr -d '\n'))
 
     len=0
     for i in make "$i_cc" mkdir install rm "${hdrs[@]}" "$cur_cflags[@]"; do

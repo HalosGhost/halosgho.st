@@ -14,3 +14,10 @@ footer{
 #runner{
     float:left;
 }
+a{
+    color:#3a7c99;
+    text-decoration:none;
+}
+a:hover{
+    border-bottom:1px solid;
+}
