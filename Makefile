@@ -68,7 +68,7 @@ deploy:
 	done; \
 	PKGDEST=packages makepkg -s; \
 	scp -r packages $(TARGET):/home/halosghost/; \
-	#ssh $(TARGET) sudo pacman -U packages/*; \
+	ssh $(TARGET); \
 	)
 
 uninstall:
