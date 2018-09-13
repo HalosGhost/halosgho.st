@@ -9,7 +9,7 @@ main (void) {
     #define ACMEDIR "/.well-known/acme-challenge"
 
     const struct lwan_url_map default_map [] = {
-        { .prefix = ACMEDIR, SERVE_FILES("." ACMEDIR) },
+        { .prefix = ACMEDIR, PRIV_SERVE_FILES("." ACMEDIR) },
         { .prefix = "/",  REDIRECT_CODE("https://halosgho.st", HTTP_TEMPORARY_REDIRECT) },
         { .prefix = NULL }
     };

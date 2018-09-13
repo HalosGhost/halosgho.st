@@ -1,6 +1,8 @@
 #if !defined(COMMON_H)
 #define COMMON_H
 
+#pragma once
+
 #include <lwan/lwan.h>
 #include <lwan/lwan-template.h>
 #include <lwan/lwan-mod-serve-files.h>
@@ -12,6 +14,12 @@
 #include <unistd.h>
 #include <errno.h>
 
-#pragma once
+#define PRIV_SERVE_FILES(path) \
+    .module = LWAN_MODULE_REF(serve_files), \
+    .args = &(struct lwan_serve_files_settings ){ \
+        .root_path = path, \
+        .serve_precompressed_files = true, \
+        .auto_index = false \
+    } \
 
 #endif // COMMON_H
