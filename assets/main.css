@@ -17,7 +17,10 @@ footer{
 a{
     color:#0f4880;
     text-decoration:none;
-}
-a:hover{
     border-bottom:1px solid;
+}
+a[href^="http"]:after,
+a[href^="https"]:after{
+    content:" ⇗";
+    margin-left: 0.3rem;
 }
