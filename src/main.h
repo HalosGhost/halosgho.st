@@ -7,9 +7,6 @@
 
 #define PREFIX "/srv/http"
 
-LWAN_HANDLER_DECLARE(projects);
-LWAN_HANDLER_DECLARE(index);
-
 static struct lwan_tpl * page_tpl;
 
 struct page {
@@ -31,6 +28,8 @@ static struct lwan_key_value headers [] = {
     { .key = "strict-transport-security", .value = "max-age=31536000; includeSubDomains" },
     { .key = NULL, .value = NULL }
 };
+
+#include "routes.h"
 
 #endif // MAIN_H
 
