@@ -22,5 +22,5 @@ a{
 a[href^="http"]:after,
 a[href^="https"]:after{
     content:" ⇗";
-    margin-left: 0.3rem;
+    margin-left: 0.1em;
 }
