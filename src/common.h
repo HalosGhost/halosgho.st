@@ -24,4 +24,9 @@
 
 #define PREFIX "/srv/http"
 
+static struct lwan_straitjacket jacket = {
+    .user_name = "http",
+    .chroot_path = PREFIX
+};
+
 #endif // COMMON_H
