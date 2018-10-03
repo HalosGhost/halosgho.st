@@ -4,6 +4,7 @@ MAINDIR ?= $(DESTDIR)$(PREFIX)
 SVCDIR  ?= $(DESTDIR)/usr/lib/systemd/system/
 BINDIR  ?= $(DESTDIR)/usr/bin
 TARGET  ?= oceanus.halosgho.st
+PORT    ?= 2222
 
 include Makerules
 
@@ -67,8 +68,8 @@ deploy:
 		echo "$$i: built"; \
 	done; \
 	PKGDEST=packages makepkg -s; \
-	scp -r packages $(TARGET):/home/halosghost/; \
-	ssh $(TARGET); \
+	scp -P $(PORT) -r packages $(TARGET):/home/halosghost/; \
+	ssh -p $(PORT) $(TARGET); \
 	)
 
 uninstall:
