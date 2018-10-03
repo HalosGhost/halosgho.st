@@ -5,8 +5,6 @@
 
 #include "common.h"
 
-#define PREFIX "/srv/http"
-
 static struct lwan_tpl * page_tpl;
 
 struct page {

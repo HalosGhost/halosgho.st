@@ -22,4 +22,6 @@
         .auto_index = false \
     } \
 
+#define PREFIX "/srv/http"
+
 #endif // COMMON_H
