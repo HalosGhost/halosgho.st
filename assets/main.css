@@ -13,6 +13,7 @@ footer{
 }
 #runner{
     float:left;
+    width:100%;
 }
 a{
     color:#0f4880;
