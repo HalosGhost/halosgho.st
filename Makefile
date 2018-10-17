@@ -41,7 +41,6 @@ res: dist
 	@cp -a --no-preserve=ownership pages dist/
 	@cp -a --no-preserve=ownership media dist/
 	@cp -a --no-preserve=ownership assets dist/
-	@cp -a --no-preserve=ownership conf/* dist/
 
 minify: res
 	@(cd dist; \
@@ -74,7 +73,6 @@ deploy:
 
 uninstall:
 	@rm -rf -- $(MAINDIR)/{assets,media,pages,.well-known}
-	@rm -f  -- $(MAINDIR)/{$(PROGNM),hgredirector}{,.conf}
 	@rm -f  -- $(SVCDIR)/{$(PROGNM),hgredirector}.service
 	@rm -f  -- $(BINDIR)/website
 

@@ -4,7 +4,11 @@ signed
 main (void) {
 
     struct lwan l;
-    lwan_init(&l);
+    struct lwan_config conf = *lwan_get_default_config();
+    conf.listener = "0.0.0.0:8080";
+    lwan_init_with_config(&l, &conf);
+
+    //lwan_straitjacket_enforce(&jacket);
 
     #define ACMEDIR "/.well-known/acme-challenge"
 
