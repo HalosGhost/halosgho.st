@@ -1,9 +1,12 @@
+body{
+    background:#eee;
+}
 #main{
     margin:1em auto;
     padding:1em;
     max-width:38em;
     font:1em/1.62em sans;
-    background:#eee;
+    white-space:normal;
 }
 li{
     margin-bottom:1em;
@@ -24,4 +27,31 @@ a[href^="http"]:after,
 a[href^="https"]:after{
     content:" ⇗";
     margin-left: 0.1em;
+}
+td h1{
+    font-size:1em;
+    margin:0;
+}
+.h, .line{
+    border:none;
+}
+tr:hover{
+    background-color:#fff;
+}
+.d{
+    color:#d00;
+    border:none;
+}
+.i{
+    color:#090;
+    border:none;
+}
+table{
+    font-family:mono;
+}
+td{
+    padding:0 0.4em;
+}
+td.num{
+    text-align:right;
 }
