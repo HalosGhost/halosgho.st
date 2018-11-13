@@ -16,10 +16,10 @@ All running on Arch Linux using `nftables <https://netfilter.org/projects/nftabl
 Design Characteristics
 ----------------------
 
-* `Secure Header Configuration <https://securityheaders.com/?q=http%3A%2F%2Fhalosgho.st&followRedirects=on>`_
-* `Secure TLS Configuration <https://www.ssllabs.com/ssltest/analyze.html?d=halosgho.st&latest>`_
+* `Secure Header Configuration <https://securityheaders.com/?q=halosgho.st&followRedirects=on>`_
+* `Secure TLS Configuration <https://www.ssllabs.com/ssltest/analyze.html?d=halosgho.st>`_
 * `Good Accessibility <http://wave.webaim.org/report#/http://halosgho.st>`_
 * `High Performance <https://gtmetrix.com/reports/halosgho.st/dnjemTfY>`_
 * `Valid, Modern, Semantic Markup <https://validator.nu/?doc=https%3A%2F%2Fhalosgho.st>`_
-* `Valid Styles <https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fhalosgho.st&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en>`_
+* `Valid Styles <https://jigsaw.w3.org/css-validator/validator?uri=halosgho.st>`_
 
