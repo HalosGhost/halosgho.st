@@ -19,8 +19,8 @@ main (void) {
         return EXIT_FAILURE;
     }
 
-    page_tpl = lwan_tpl_compile_file("index.htm", page_template);
-    if ( !page_tpl ) {
+    index_tpl = lwan_tpl_compile_file("index.htm", index_template);
+    if ( !index_tpl ) {
         fputs("Failed to compile template `index.htm`\n", stderr);
         return EXIT_FAILURE;
     }
@@ -41,7 +41,7 @@ main (void) {
 
     lwan_set_url_map(&l, default_map);
     lwan_main_loop(&l);
-    lwan_tpl_free(page_tpl);
+    lwan_tpl_free(index_tpl);
     lwan_shutdown(&l);
 
     return EXIT_SUCCESS;

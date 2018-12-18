@@ -5,14 +5,14 @@
 
 #include "common.h"
 
-static struct lwan_tpl * page_tpl;
+static struct lwan_tpl * index_tpl;
 
-struct page {
+struct index {
     int64_t year;
 };
 
-static const struct lwan_var_descriptor page_template[] = {
-    TPL_VAR_INT(struct page, year),
+static const struct lwan_var_descriptor index_template[] = {
+    TPL_VAR_INT(struct index, year),
     TPL_VAR_SENTINEL
 };
 
