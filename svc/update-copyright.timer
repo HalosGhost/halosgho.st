@@ -1,5 +1,5 @@
 [Unit]
-Description=start of New Years Day
+Description=Yearly Copyright Notice Update
 
 [Timer]
 OnCalendar=yearly
