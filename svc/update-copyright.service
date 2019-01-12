@@ -3,4 +3,4 @@ Description=Update site copyright year
 
 [Service]
 Type=oneshot
-ExecStart=/srv/http/update-copyright
+ExecStart=/usr/bin/update-copyright
