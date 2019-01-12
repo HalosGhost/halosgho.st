@@ -44,7 +44,7 @@ res: dist
 
 minify: res
 	@(cd dist; \
-	for i in assets/*.css pages/*.htm; do \
+	for i in assets/*.css pages/*.html; do \
 		mv "$$i" "$$i".bak; \
 		sed -E 's/^\s+//g' "$$i".bak | tr -d '\n' > "$$i"; \
 		rm "$$i".bak; \
