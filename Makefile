@@ -54,7 +54,7 @@ install: all
 	@mkdir -p $(BINDIR) $(SVCDIR) $(MAINDIR)
 	@cp -a --no-preserve=ownership dist/* $(MAINDIR)/
 	@cp -a --no-preserve=ownership svc/* $(SVCDIR)/
-	@install -Dm755 website $(BINDIR)/website
+	@cp -a --no-preserve=ownership bin/* $(BINDIR)/
 
 deploy:
 	@(pushd bld; \

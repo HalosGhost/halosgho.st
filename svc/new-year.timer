@@ -1,0 +1,9 @@
+[Unit]
+Description=start of New Years Day
+
+[Timer]
+OnCalendar=yearly
+Persistent=true
+
+[Install]
+WantedBy=timers.target
