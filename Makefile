@@ -54,7 +54,7 @@ install: all
 	@mkdir -p $(BINDIR) $(SVCDIR) $(MAINDIR)
 	@cp -a --no-preserve=ownership dist/* $(MAINDIR)/
 	@cp -a --no-preserve=ownership svc/* $(SVCDIR)/
-	@cp -a --no-preserve=ownership bin/* $(BINDIR)/
+	@install -m755 -t $(BINDIR) bin/*
 
 deploy:
 	@(pushd bld; \
