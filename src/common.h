@@ -26,7 +26,8 @@
 
 static struct lwan_straitjacket jacket = {
     .user_name = "http",
-    .chroot_path = PREFIX
+    .chroot_path = PREFIX,
+    .drop_capabilities = true
 };
 
 #endif // COMMON_H
