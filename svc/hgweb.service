@@ -4,7 +4,6 @@ After=network.target
 
 [Service]
 PrivateTmp=true
-User=http
 ExecStart=/usr/bin/website hgweb
 KillSignal=SIGINT
 Restart=always

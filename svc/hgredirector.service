@@ -5,7 +5,6 @@ Requires=hgweb.service
 
 [Service]
 PrivateTmp=true
-User=http
 ExecStart=/usr/bin/website hgredirector
 KillSignal=SIGINT
 Restart=always
