@@ -8,7 +8,7 @@ main (void) {
     conf.listener = "0.0.0.0:8443";
     lwan_init_with_config(&l, &conf);
 
-    //lwan_straitjacket_enforce(&jacket);
+    lwan_straitjacket_enforce(&jacket);
 
     const struct lwan_url_map default_map [] = {
         { .prefix = "/",         PRIV_SERVE_FILES("./pages")           },

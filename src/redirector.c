@@ -8,7 +8,7 @@ main (void) {
     conf.listener = "0.0.0.0:8080";
     lwan_init_with_config(&l, &conf);
 
-    //lwan_straitjacket_enforce(&jacket);
+    lwan_straitjacket_enforce(&jacket);
 
     #define ACMEDIR "/.well-known/acme-challenge"
 
