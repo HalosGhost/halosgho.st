@@ -68,6 +68,7 @@ deploy:
 		echo "$$i: built"; \
 	done; \
 	PKGDEST=packages makepkg -s; \
+	ssh -p $(PORT) $(TARGET) 'rm -r -- /home/halosghost/packages'; \
 	scp -P $(PORT) -r packages $(TARGET):/home/halosghost/; \
 	ssh -p $(PORT) $(TARGET); \
 	)
