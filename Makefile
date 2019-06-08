@@ -57,7 +57,7 @@ install: all
 	@cp -a --no-preserve=ownership svc/* $(SVCDIR)/
 	@install -m755 -t $(BINDIR) bin/*
 
-deploy:
+deploy: clean
 	@(pushd bld; \
 	$(MKDIR) packages; \
 	for i in lwan-git hitch-git acme-client-git; do \
