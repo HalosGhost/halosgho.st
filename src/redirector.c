@@ -12,15 +12,22 @@ main (void) {
 
     #define ACMEDIR "/.well-known/acme-challenge"
 
+    char * target = getenv("HOMEPAGE_REDIRECT_TARGET");
+    if ( !target ) {
+        fputs("ERROR: No target specified in HOMEPAGE_REDIRECT_TARGET\n", stderr);
+        goto cleanup;
+    }
+
     const struct lwan_url_map default_map [] = {
         { .prefix = ACMEDIR, PRIV_SERVE_FILES("." ACMEDIR) },
-        { .prefix = "/",  REDIRECT_CODE("https://halosgho.st", HTTP_TEMPORARY_REDIRECT) },
+        { .prefix = "/",  REDIRECT_CODE(target, HTTP_TEMPORARY_REDIRECT) },
         { .prefix = NULL }
     };
 
     lwan_set_url_map(&l, default_map);
     lwan_main_loop(&l);
-    lwan_shutdown(&l);
 
-    return EXIT_SUCCESS;
+    cleanup:
+        lwan_shutdown(&l);
+        return EXIT_SUCCESS;
 }

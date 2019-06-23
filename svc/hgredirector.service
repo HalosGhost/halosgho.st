@@ -5,6 +5,7 @@ Requires=hgweb.service
 
 [Service]
 PrivateTmp=true
+Environment="HOMEPAGE_REDIRECT_TARGET=https://halosgho.st"
 ExecStart=/usr/bin/website hgredirector
 KillSignal=SIGINT
 Restart=always
