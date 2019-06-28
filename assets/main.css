@@ -8,6 +8,9 @@ body{
     font:1em/1.62em sans;
     white-space:normal;
 }
+.construction{
+    opacity:0.7;
+}
 li{
     margin-bottom:1em;
 }
