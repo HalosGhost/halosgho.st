@@ -40,7 +40,6 @@ dist:
 
 res: dist
 	@cp -a --no-preserve=ownership pages dist/
-	@cp -a --no-preserve=ownership talks dist/
 	@cp -a --no-preserve=ownership media dist/
 	@cp -a --no-preserve=ownership assets dist/
 

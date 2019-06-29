@@ -12,7 +12,6 @@ main (void) {
 
     const struct lwan_url_map default_map [] = {
         { .prefix = "/",         PRIV_SERVE_FILES("./pages")           },
-        { .prefix = "/talks",    PRIV_SERVE_FILES("./talks")           },
         { .prefix = "/assets",   PRIV_SERVE_FILES("./assets")          },
         { .prefix = "/media",    PRIV_SERVE_FILES("./media")           },
         { .prefix = NULL }
