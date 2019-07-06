@@ -26,7 +26,7 @@ scan-build:
 
 clean:
 	@rm -rf -- dist cov-int $(PROGNM).tgz ./src/*.plist
-	@rm -rf -- bld/{lwan-git,acme-client-git,hitch-git,pkg,src,packages,halosgho.st}
+	@rm -rf -- bld/{lwan-git,acme-client-git,uacme,hitch-git,pkg,src,packages,halosgho.st}
 
 complexity:
 	@complexity -h ./src/*
@@ -60,7 +60,7 @@ install: all
 deploy: clean
 	@(pushd bld; \
 	$(MKDIR) packages; \
-	for i in lwan-git hitch-git acme-client-git; do \
+	for i in lwan-git hitch-git acme-client-git uacme; do \
 		cower -df "$$i" --ignorerepo &> /dev/null; \
 		pushd "$$i"; \
 		PKGDEST=../packages makepkg -s; \
