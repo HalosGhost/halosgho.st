@@ -9,7 +9,7 @@ MKDIR   ?= mkdir -p
 
 include Makerules
 
-.PHONY: all bin clean complexity scan-build cov-build res minify install uninstall
+.PHONY: all bin clean complexity scan-build cov-build res run minify install uninstall
 
 all: dist bin res minify
 
@@ -42,6 +42,9 @@ res: dist
 	@cp -a --no-preserve=ownership pages dist/
 	@cp -a --no-preserve=ownership media dist/
 	@cp -a --no-preserve=ownership assets dist/
+
+run: all
+	@(cd dist; sudo ./$(PROGNM))
 
 minify: res
 	@(cd dist; \
