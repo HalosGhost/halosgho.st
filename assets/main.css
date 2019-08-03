@@ -58,3 +58,6 @@ td{
 td.num{
     text-align:right;
 }
+#footnotes{
+    border-top:1px solid;
+}
