@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="referer" content="never">
+        <link href="/assets/main.css" type="text/css" rel="stylesheet">
+        <link href="/assets/favicon.ico" rel="icon">
+        <title>/home/halosghost/talks</title>
+    </head>
+    <body id="main">
+        <header><h1><a href="/">Sam Stuewe (halosghost)</a></h1></header>
+        <main>
+            <h2>Everywhere the Light Touches (And Doesn't)</h2>
+            <p><a href="./ub-intro.pdf">Slides</a> - No Audio Recording Available - No Video Recording Available</p>
+            <p>
+                Undefined Behavior (<abbr>UB</abbr>) creates a large number of headaches for any developer working with C.
+                Below is an edited and reformatted version of a talk I gave on 27 June 2019 (Gregorian) that addresses where UB comes from, how to think about it, and, maybe, how we can live with it.
+            </p>
+            <h3>Behaviors</h3>
+            <p>There are four types of non-portable behavior in C:<sup><a id="fn-bk-1" href="#fn-1">[1]</a></sup></p>
+            <dl>
+                <dt>Unspecified:</dt>
+                <dd><blockquote>use of an unspecified value, or other behavior where this International Standard provides two or more possibilities and imposes no further requirements on which is chosen in any instance</blockquote></dd>
+
+                <dt>Implementation-Defined:</dt>
+                <dd><blockquote>unspecified behavior where each implementation documents how the choice is made</blockquote></dd>
+
+                <dt>Undefined:</dt>
+                <dd><blockquote>behavior, upon use of a nonportable or erroneous program construct or of erroneous data, for which this International Standard imposes no requirements</blockquote></dd>
+
+                <dt>Locale-Specific:</dt>
+                <dd><blockquote>behavior that depends on local conventions of nationality, culture, and language that each implementation documents</blockquote></dd>
+            </dl>
+            <p>
+                As a general goal, it is admirable to attempt to avoid all forms of non-portable behavior (making programs that can be run anywhere is one of the main benefits of using C).
+                However, even just using <code>printf</code> can result in a variety of unspecified and undefined behaviors.
+                For the purposes of this article, I will only be discussing undefined behavior (because it holds the most pervasive and surprising effects).
+            </p>
+            <p>
+                To the surprise of many new C programmers, there are quite a few undefined behaviors.
+                In fact, as of the 2018 revision of C, there are 211 undefined behaviors.<sup><a id="fn-bk-2" href="#fn-2">[2]</a></sup>
+                Thankfully, the C standard actually itemizes all non-portable behaviors in Annex J.
+                In particular, all undefined behaviors are listed in section 2.
+            </p>
+            <p>
+                Unfortunately, that is not The Bad News™.
+                In particular, the The Bad News™ starts with the first item in the list of undefined behaviors:
+                <blockquote>
+                    A “shall” or “shall not” requirement that appears outside of a constraint is violated (clause 4).
+                </blockquote>
+
+                Put more plainly, to make a complete list of the undefined behaviors in C, you would need to read the entire C standard.
+                Over 400 pages (and costing nearly 200$US), this is often not an option that excites most programmers.
+
+                Though there is a partial solution to the cost,<sup><a id="fn-bk-3" href="#fn-3">[3]</a></sup> there is no current solution to the time and patience.
+                Being able to have and know the exhaustive list of undefined behaviors is generally not practical.
+
+                There are tools to help us, and building a better understanding serves as one of the most powerful.
+            </p>
+
+            <h3>A Mental Model</h3>
+            <p>
+                There are two phrases in the definition of <abbr>UB</abbr> that should be interrogated closely to come to a more complete understanding: “upon use”, and “no requirements”.
+            </p>
+            <p>
+                Upon reading the Standard's definition, programmers may take “upon use” to mean that, once your program's execution reaches a line of code that “invokes” undefined behavior, the rest of the program's behavior is unpredictable.
+                In fact, the effect of undefined behavior is far more pervasive.
+                For lack of a better phrase, undefined behavior “takes effect” at compile-time.
+                That is, if your program's source code includes a line of code anywhere in it that conains undefined behavior, your program is not considered to be valid C, and the compilation of your program and any executions there of are not guaranteed to have any meaning.<sup><a id="fn-bk-4" href="#fn-4">[4]</a></sup>
+            </p>
+            <p>
+                When a compiler (i.e., an “implementation”) attempts to compile a bit of code with undefined behavior, it might do any of a few things:
+            </p>
+            <ul>
+                <li>generate reasonable instructions</li>
+                <li>print a diagnostic message (e.g., warnings or errors)</li>
+                <li>cease translation of the source code</li>
+                <li>ignore the code entirely</li>
+            </ul>
+            <p>
+                But, “no requirements” means that a compiler doesn't actually need to do any of the options above.
+                Technically, a compiler could also generate instructions that always return the integer <code>42</code>; it could attempt to format your hard drive; it could also do anything else at all, including launching the missiles.
+                Doing so would be rude, and probably not desireable by programmers, but still compliant as far as the C Standard is concerned.
+            </p>
+            <h3>A Real-World Example</h3>
+            <p>
+                Below is the <a href="https://blog.regehr.org/archives/767">second, winning submission</a> to John Regehr's <a href="https://blog.regehr.org/archives/759">Undefined Behavior Consequences Contest</a>:
+            </p>
+            <pre><code>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+  int *p = (int*)malloc(sizeof(int));
+  int *q = (int*)realloc(p, sizeof(int));
+  *p = 1;
+  *q = 2;
+  if (p == q)
+    printf("%d %d\n", *p, *q);
+}
+            </code></pre>
+            <p>
+                Despite such a short code snippet, it might not be immediately clear what goes wrong in this program.
+                Take a moment to think about what you think this code should do, what is wrong with it specifically, and what you think it actually will do.
+            </p>
+            <p>
+                Many programmers will suggest that this code has two possible, reasonable behaviors.
+                Either, 
+            </p>
+            <ol>
+                <li><code>p</code> and <code>q</code> point to different locations following the call to <code>realloc()</code>, and so nothing will be printed; or</li>
+                <li><code>p</code> and <code>q</code> point to the same location (easily possible), and so the comparison succeeds and <code>2 2</code> will be printed (as <code>2</code> was the last value written to that location.</li>
+            </ol>
+            <p>
+                Given the topic of this article, it will not surprise you that neither of these two behaviors is guaranteed.
+                In fact, when compiled with <code>clang -O</code>, the program above prints <code>1 2</code>.
+                The specific problem with this code is that <code>realloc()</code> is allowed to deallocate the pointer passed to it.
+                And so, using the pointer you pass to <code>realloc</code> is a so-called “use-after-free” bug, a particularly well-known instance of undefined behavior.<sup><a id="fn-bk-5" href="#fn-5">[5]</a></sup>
+            </p>
+            <h3>From Whence it Came</h3>
+            <p>
+                A cursory search online will yield a rash of criticism for C's undefined behavior.
+                I propose the following thought experiment: What would you suggest be done in the following cases for a language that does not have exception handling?
+            </p>
+            <ul>
+                <li>integer overflow</li>
+                <li>integer division by <code>0</code></li>
+                <li>a <code>_Noreturn</code>-marked function actually returns</li>
+            </ul>
+            <p>
+                C was born in a different era.
+                x86 had barely arrived on the scene (and it would be decades before x64 arrived) let alone asserted its dominance in the market;
+                most programmers still programmed in assembly;
+                two's compliment signed integer arithmetic existed, but was hardly universally accepted.
+                Remembering this, many of these low-level considerations are difficult to specify.
+                The C Committee specify things as undefined behavior for a variety of reasons: to enable simpler implementation or optimization, because there are competing standards already implemented by hardware, or because there is no reasonable alternative (e.g., in the case of integer division by <code>0</code>).
+            </p>
+            <p>
+                Furthermore, undefined behavior was not wholly created by C and the C Committee (or Dennis Ritchie).
+                In fact, some hardware platforms even specify undefined behavior (e.g., situations for which the processor might just halt because of invalid state).
+                In the case of a program creating one of these circumstances, even exception mechanisms will not save your code.
+            </p>
+            <h3>How Do We Cope?</h3>
+            <p>
+                Okay, so The Bad News™: There is no reliable way to know if any codebase, even mostly trivial ones, contains undefined behavior.
+                That does sound bad, but the bright side is that there are many tools to help us make our code more reliable.
+                Compilers offer a lot of tooling to help: warning flags to let you ask the compiler to tell you if some fishy behaviors might be happening, feature flags to make C behave in more predictable ways (most notoriously in the cases of <code>-fwrapv</code> and <code>-fno-strict-aliasing</code>, and sanitizers (which add runtime code checks to ensure well-defined behavior).
+                You can also leverage static analyzers (e.g., <code>splint</code> and <code>scan-build</code>) to help detect a larger set of possible errors than compilers can detect (in exchange for having to deal with some false positives).
+                You can even leverage some formal methods tooling to help prove your code correct (my personal favorite being <a href="https://frama-c.com/"><code>frama-c</code></a>).<sup><a id="fn-bk-6" href="#fn-6">[6]</a></sup>
+            </p>
+            <p>
+                Personally, though I have tried a great many languages, I have yet to find one that can fundamentally replace C for my usage.
+                If a safer language works well for your use-case and your users, it may well be a good choice to use it instead of C.
+                For those of us that have not found such an option yet, we should strive to leverage the tools I mention above, and to read the manuals and standards as much as possible.
+            </p>
+        </main>
+        <section id="footnotes">
+            <ol>
+                <li id="fn-1">§3.4. ISO/IEC 9899:2018 <a href="#fn-bk-1">↩</a></li>
+                <li id="fn-2">Annex J, Section 2. ISO/IEC 9899:2018 <a href="#fn-bk-2">↩</a></li>
+                <li id="fn-3">
+                    Thankfully, the final drafts of each standard revision (which tend to be <em>very</em> close to the published standard) are made freely available.
+                    The final draft of what has become <abbr>C18</abbr> has been <a href="https://web.archive.org/web/20181230041359if_/http://www.open-std.org/jtc1/sc22/wg14/www/abq/c17_updated_proposed_fdis.pdf">archived</a>.
+                    <a href="#fn-bk-3">↩</a>
+                </li>
+                <li id="fn-4">
+                    Regehr, John. “A Guide to Undefined Behavior in C and C++”. <a href="https://blog.regehr.org/archives/213">https://blog.regehr.org/archives/213</a>.
+                    <a href="#fn-bk-4">↩</a>
+                </li>
+                <li id="fn-5">§7.22.3.3, line number 2. ISO/IEC 9899:2018 <a href="#fn-bk-5">↩</a></li>
+                <li id="fn-6">A truly excellent tutorial to get started with <code>frama-c</code> was written by <a href="http://www-verimag.imag.fr/~boulme/Frama-C-Tutorial/tutorial-frama-C.pdf">Allan Blanchard</a>. <a href="#fn-bk-6">↩</a></li>
+            </ol>
+        </section>
+    </body>
+</html>
