@@ -102,7 +102,7 @@ int main() {
             </code></pre>
             <p>
                 Despite such a short code snippet, it might not be immediately clear what goes wrong in this program.
-                Take a moment to think about what you think this code should do, what is wrong with it specifically, and what you think it actually will do.
+                Take a moment to ponder what this code should do, what is wrong with it specifically, and what you imagine it actually will do.
             </p>
             <p>
                 Many programmers will suggest that this code has two possible, reasonable behaviors.
@@ -145,7 +145,7 @@ int main() {
             <p>
                 Okay, so The Bad News™: There is no reliable way to know if any codebase, even mostly trivial ones, contains undefined behavior.
                 That does sound bad, but the bright side is that there are many tools to help us make our code more reliable.
-                Compilers offer a lot of tooling to help: warning flags to let you ask the compiler to tell you if some fishy behaviors might be happening, feature flags to make C behave in more predictable ways (most notoriously in the cases of <code>-fwrapv</code> and <code>-fno-strict-aliasing</code>, and sanitizers (which add runtime code checks to ensure well-defined behavior).
+                Compilers offer a lot of tooling to help: warning flags to let you ask the compiler to tell you if some fishy behaviors might be happening, feature flags to make C behave in more predictable ways (most notoriously in the cases of <code>-fwrapv</code> and <code>-fno-strict-aliasing</code>), and sanitizers (which add runtime code checks to ensure well-defined behavior).
                 You can also leverage static analyzers (e.g., <code>splint</code> and <code>scan-build</code>) to help detect a larger set of possible errors than compilers can detect (in exchange for having to deal with some false positives).
                 You can even leverage some formal methods tooling to help prove your code correct (my personal favorite being <a href="https://frama-c.com/"><code>frama-c</code></a>).<sup><a id="fn-bk-6" href="#fn-6">[6]</a></sup>
             </p>
