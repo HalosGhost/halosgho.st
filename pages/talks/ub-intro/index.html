@@ -138,21 +138,20 @@ int main() {
             </p>
             <p>
                 Furthermore, undefined behavior was not wholly created by C and the C Committee (or Dennis Ritchie).
-                In fact, some hardware platforms even specify undefined behavior (e.g., situations for which the processor might just halt because of invalid state).
+                In fact, some hardware platforms even have undefined behavior (e.g., situations for which the processor might just halt because of invalid state).<sup><a id="fn-bk-6" href="#fn-6">[6]</a></sup>
                 In the case of a program creating one of these circumstances, even exception mechanisms will not save your code.
             </p>
             <h3>How Do We Cope?</h3>
             <p>
-                Okay, so The Bad News™: There is no reliable way to know if any codebase, even mostly trivial ones, contains undefined behavior.
-                That does sound bad, but the bright side is that there are many tools to help us make our code more reliable.
-                Compilers offer a lot of tooling to help: warning flags to let you ask the compiler to tell you if some fishy behaviors might be happening, feature flags to make C behave in more predictable ways (most notoriously in the cases of <code>-fwrapv</code> and <code>-fno-strict-aliasing</code>), and sanitizers (which add runtime code checks to ensure well-defined behavior).
-                You can also leverage static analyzers (e.g., <code>splint</code> and <code>scan-build</code>) to help detect a larger set of possible errors than compilers can detect (in exchange for having to deal with some false positives).
-                You can even leverage some formal methods tooling to help prove your code correct (my personal favorite being <a href="https://frama-c.com/"><code>frama-c</code></a>).<sup><a id="fn-bk-6" href="#fn-6">[6]</a></sup>
+                So, finally, The Bad News™: There is no reliable way to know if any codebase, even mostly trivial ones, contains undefined behavior.
+                The bright side is that there are many tools to help us make our code more reliable.
+                Compilers offer a lot of tooling to help: warning flags to let you ask the compiler to tell you if some fishy behaviors might be happening, feature flags to make C behave in more predictable ways (most notoriously in the cases of <code>-fwrapv</code> and <code>-fno-strict-aliasing</code>), and sanitizers (which add runtime code checks to ensure well-defined behavior).<sup><a id="fn-bk-7" href="#fn-7">[7]</a></sup>
+                You can also leverage static analyzers (e.g., <code>splint</code> and <code>scan-build</code>) to help detect a larger set of possible errors than compilers can detect (in exchange for having to deal with some false positives).<sup><a id="fn-bk-8" href="#fn-8">[8]</a></sup>
+                You can even leverage some formal methods tooling to help prove your code correct (my personal favorite being <a href="https://frama-c.com/"><code>frama-c</code></a>).<sup><a id="fn-bk-9" href="#fn-9">[9]</a></sup>
             </p>
             <p>
-                Personally, though I have tried a great many languages, I have yet to find one that can fundamentally replace C for my usage.
-                If a safer language works well for your use-case and your users, it may well be a good choice to use it instead of C.
-                For those of us that have not found such an option yet, we should strive to leverage the tools I mention above, and to read the manuals and standards as much as possible.
+                If a safer language will work well for your use-case and your users, carefully weigh the benefits of C against the negatives.
+                For those of us that do not yet have such an option, we must strive to leverage the tools available, and to read the manuals and standards as much as possible.
             </p>
         </main>
         <section id="footnotes">
@@ -169,7 +168,10 @@ int main() {
                     <a href="#fn-bk-4">↩</a>
                 </li>
                 <li id="fn-5">§7.22.3.3, line number 2. ISO/IEC 9899:2018 <a href="#fn-bk-5">↩</a></li>
-                <li id="fn-6">A truly excellent tutorial to get started with <code>frama-c</code> was written by <a href="http://www-verimag.imag.fr/~boulme/Frama-C-Tutorial/tutorial-frama-C.pdf">Allan Blanchard</a>. <a href="#fn-bk-6">↩</a></li>
+                <li id="fn-6">For example, the unofficially named <code>HCF</code> instructions. See <a href="https://en.wikipedia.org/wiki/Halt_and_Catch_Fire">Halt and Catch Fire</a> for more. <a href="#fn-bk-6">↩</a></li>
+                <li id="fn-7">The GNU Compiler Collection documentation, <a href="https://gcc.gnu.org/onlinedocs/gcc/Code-Gen-Options.html">Section 3.16</a> <a href="#fn-bk-7">↩</a></li>
+                <li id="fn-8">The wikipedia page on <a href="https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis#C,_C++">tools for static analysis</a> includes a section for C and C++. <a href="#fn-bk-8">↩</a></li>
+                <li id="fn-9">A truly excellent <a href="http://www-verimag.imag.fr/~boulme/Frama-C-Tutorial/tutorial-frama-C.pdf">tutorial</a> to get started with <code>frama-c</code> was written by Allan Blanchard. <a href="#fn-bk-9">↩</a></li>
             </ol>
         </section>
     </body>
