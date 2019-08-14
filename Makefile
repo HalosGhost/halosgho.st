@@ -48,7 +48,7 @@ run: all
 
 minify: res
 	@(cd dist; \
-	for i in assets/*.css pages/*.html; do \
+	for i in $$(find {pages,assets} -name '*.html' -o -name '*.css'); do \
 		mv "$$i" "$$i".bak; \
 		sed -E 's/^\s+//g' "$$i".bak | tr -d '\n' > "$$i"; \
 		rm "$$i".bak; \
