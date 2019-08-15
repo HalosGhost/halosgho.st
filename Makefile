@@ -39,9 +39,9 @@ dist:
 	@$(MKDIR) dist/.well-known/acme-challenge
 
 res: dist
-	@cp -a --no-preserve=ownership pages dist/
-	@cp -a --no-preserve=ownership media dist/
-	@cp -a --no-preserve=ownership assets dist/
+	@(for i in pages media assets; do \
+		cp -a --no-preserve=ownership "$$i" dist/; \
+	done)
 
 run: all
 	@(cd dist; sudo ./$(PROGNM))
