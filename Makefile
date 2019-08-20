@@ -15,9 +15,7 @@ all: dist bin res minify
 
 bin: dist
 	@(cd src; \
-		$(CC) $(CFLAGS) $(LDFLAGS) $(SOURCES) -o ../dist/$(PROGNM) \
-	)
-	@(cd src; \
+		$(CC) $(CFLAGS) $(LDFLAGS) $(SOURCES) -o ../dist/$(PROGNM); \
 		$(CC) $(CFLAGS) $(LDFLAGS) redirector.c -o ../dist/hgredirector \
 	)
 
