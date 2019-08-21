@@ -48,7 +48,7 @@ minify: res
 	@(cd dist; \
 	for i in $$(find {pages,assets} -name '*.html' -o -name '*.css'); do \
 		mv "$$i" "$$i".bak; \
-		sed -E 's/^\s+//g' "$$i".bak | tr -d '\n' > "$$i"; \
+		awk -f '$(PWD)/extra/minify.awk' "$$i".bak > "$$i"; \
 		rm "$$i".bak; \
 	done)
 
