@@ -22,11 +22,11 @@
         .auto_index = false \
     } \
 
-#define PREFIX "/srv/http"
+#define WEBDIR "/srv/http"
 
 static struct lwan_straitjacket jacket = {
     .user_name = "http",
-    .chroot_path = PREFIX,
+    .chroot_path = WEBDIR,
     .drop_capabilities = true
 };
 

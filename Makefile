@@ -1,13 +1,13 @@
+include Makerules
+
 PROGNM  =  hgweb
-PREFIX  ?= /srv/http
-MAINDIR ?= $(DESTDIR)$(PREFIX)
-SVCDIR  ?= $(DESTDIR)/usr/lib/systemd/system/
-BINDIR  ?= $(DESTDIR)/usr/bin
+WEBDIR  ?= /srv/http
+MAINDIR ?= $(DESTDIR)$(WEBDIR)
+SVCDIR  ?= $(DESTDIR)$(PREFIX)/lib/systemd/system/
+BINDIR  ?= $(DESTDIR)$(PREFIX)/bin
 TARGET  ?= oceanus.halosgho.st
 PORT    ?= 2222
 MKDIR   ?= mkdir -p
-
-include Makerules
 
 .PHONY: all bin clean complexity scan-build cov-build res run minify install uninstall
 
