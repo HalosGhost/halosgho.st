@@ -3,5 +3,6 @@ Description=Let's Encrypt Auto-Renew
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/uacme -vyfh /usr/bin/uacme-hook issue halosgho.st oceanus.halosgho.st
+Environment=UACME_CHALLENGE_PATH=/srv/http/.well-known/acme-challenge
+ExecStart=/usr/bin/uacme -vyfh /usr/share/uacme/uacme.sh issue halosgho.st oceanus.halosgho.st
 ExecStart=/usr/bin/systemctl restart hitch.service
