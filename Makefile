@@ -76,7 +76,7 @@ deploy: clean
 
 uninstall:
 	@rm -rf -- $(MAINDIR)/{assets,media,pages,.well-known}
-	@rm -f  -- $(SVCDIR)/{$(PROGNM),hgredirector}.service
+	@rm -f  -- $(SVCDIR)/{$(PROGNM),hgredirector}.service ${SVCDIR}/update-copyright.{service,timer} ${SVCDIR}/uacme.{timer,service}
 	@rm -f  -- $(BINDIR)/website
 
 include Makeeaster
