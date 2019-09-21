@@ -67,7 +67,8 @@ check_deps () {
 }
 
 update_makerule () {
-    sed -i ./Makerules -re "s/$1.*/$1 = $2/"
+    sed -i ./Makerules -re "1s|$1((\\s+)?.?=).*|$1\\1 $2|;t" \
+                        -e "1,/$1((\\s+)?.?=).*/s||$1\\1 $2|"
 }
 
 update () {
@@ -119,7 +120,7 @@ for i in "$@"; do
                         shift;;
         --prefix=*)     pref="${i#*=}"
                         update          PREFIX "\"$pref\"";
-                        update_makevar  PREFIX "$pref";
+                        update_makerule PREFIX "$pref";
                         shift;;
         --help)         usage; exit 0;;
         --reset-config) default_config; break;;
