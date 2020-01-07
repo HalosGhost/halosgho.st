@@ -5,6 +5,7 @@ BINDIR ?= $(DESTDIR)$(PREFIX)/bin
 ZSHDIR ?= $(DESTDIR)$(PREFIX)/share/zsh
 BSHDIR ?= $(DESTDIR)$(PREFIX)/share/bash-completions
 MKDIR  ?= mkdir -p
+RUNCMD ?= ./dist/$(PROGNM)
 
 .PHONY: all bin clean scan-build cov-build complexity debug doc verify install uninstall
 
@@ -23,7 +24,7 @@ dist:
 	@$(MKDIR) ./dist
 
 debug: bin
-	@gdb --tui ./dist/$(PROGNM)
+	@gdb --tui $(RUNCMD)
 
 doc: dist
 	@(cd doc; \
@@ -38,6 +39,9 @@ cov-build: dist
 
 complexity: bin
 	complexity -h ./src/*
+
+run: bin
+	@$(RUNCMD)
 
 scan-build:
 	@scan-build --use-cc=$(CC) make bin
