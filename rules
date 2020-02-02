@@ -15,7 +15,7 @@ bin: dist
 	@$(CC) $(CFLAGS) $(LDFLAGS) src/*.c -DVERSION="\"$(VER)\n\"" -o dist/$(PROGNM)
 
 check: bin
-	@./test-suite
+	@(if [ -x ./test-suite ]; then ./test-suite; else true; fi)
 
 clean:
 	@rm -rf -- dist cov-int $(PROGNM).tgz make.sh ./src/*.plist
@@ -27,11 +27,11 @@ debug: bin
 	@gdb --tui $(RUNCMD)
 
 doc: dist
-	@(cd doc; \
+	@(if [ -d doc ]; then (cd doc; \
 		sphinx-build -b man -Dversion=$(VER) \
 			-d doctree -E . ../dist $(PROGNM).rst; \
 		rm -r -- doctree; \
-	)
+	); else true; fi)
 
 cov-build: dist
 	@cov-build --dir cov-int ./make.sh
