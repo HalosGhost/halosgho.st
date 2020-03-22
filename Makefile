@@ -1,4 +1,4 @@
-.PHONY: all
+.PHONY: init
 
 init:
 	@cp skeleton ../Makefile
