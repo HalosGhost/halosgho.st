@@ -5,35 +5,36 @@ BINDIR ?= $(DESTDIR)$(PREFIX)/bin
 ZSHDIR ?= $(DESTDIR)$(PREFIX)/share/zsh
 BSHDIR ?= $(DESTDIR)$(PREFIX)/share/bash-completions
 MKDIR  ?= mkdir -p
-RUNCMD ?= ./dist/$(PROGNM)
+BLDDIR ?= dist
+RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
 
 .PHONY: all bin clean scan-build cov-build complexity debug doc verify install uninstall
 
-all: dist bin check doc
+all: $(BLDDIR) bin check doc
 
-bin: dist
-	@$(CC) $(CFLAGS) $(LDFLAGS) src/*.c -DVERSION="\"$(VER)\n\"" -o dist/$(PROGNM)
+bin: $(BLDDIR)
+	@$(CC) $(CFLAGS) $(LDFLAGS) src/*.c -DVERSION="\"$(VER)\n\"" -o $(BLDDIR)/$(PROGNM)
 
 check: bin
 	@(if [ -x ./test-suite ]; then ./test-suite; else true; fi)
 
 clean:
-	@rm -rf -- dist cov-int $(PROGNM).tgz make.sh ./src/*.plist
+	@rm -rf -- $(BLDDIR) cov-int $(PROGNM).tgz make.sh ./src/*.plist
 
-dist:
-	@$(MKDIR) ./dist
+$(BLDDIR):
+	@$(MKDIR) ./$(BLDDIR)
 
 debug: bin
 	@gdb --tui $(RUNCMD)
 
-doc: dist
+doc: $(BLDDIR)
 	@(if [ -d doc ]; then (cd doc; \
 		sphinx-build -b man -Dversion=$(VER) \
-			-d doctree -E . ../dist $(PROGNM).rst; \
+			-d doctree -E . ../$(BLDDIR) $(PROGNM).rst; \
 		rm -r -- doctree; \
 	); else true; fi)
 
-cov-build: dist
+cov-build: $(BLDDIR)
 	@cov-build --dir cov-int ./make.sh
 	@tar czvf $(PROGNM).tgz cov-int
 
@@ -50,8 +51,8 @@ verify:
 	@frama-c $(FMFLAGS) src/*.c
 
 install:
-	@install -Dm755 dist/$(PROGNM) $(BINDIR)/$(PROGNM)
-	@install -Dm755 dist/$(PROGNM).1 $(DOCDIR)/man1/$(PROGNM).1
+	@install -Dm755 $(BLDDIR)/$(PROGNM) $(BINDIR)/$(PROGNM)
+	@install -Dm755 $(BLDDIR)/$(PROGNM).1 $(DOCDIR)/man1/$(PROGNM).1
 
 uninstall:
 	@rm -f -- $(BINDIR)/$(PROGNM)
