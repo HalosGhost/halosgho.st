@@ -5,7 +5,6 @@ BINDIR ?= $(DESTDIR)$(PREFIX)/bin
 ZSHDIR ?= $(DESTDIR)$(PREFIX)/share/zsh
 BSHDIR ?= $(DESTDIR)$(PREFIX)/share/bash-completions
 MKDIR  ?= mkdir -p
-BLDDIR ?= dist
 RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
 
 .PHONY: all bin clean scan-build cov-build complexity debug doc verify install uninstall
@@ -19,7 +18,7 @@ check: bin
 	@(if [ -x ./test-suite ]; then ./test-suite; else true; fi)
 
 clean:
-	@rm -rf -- $(BLDDIR) cov-int $(PROGNM).tgz make.sh ./src/*.plist
+	@rm -rf -- dist cov-int $(PROGNM).tgz make.sh ./src/*.plist
 
 $(BLDDIR):
 	@$(MKDIR) ./$(BLDDIR)
