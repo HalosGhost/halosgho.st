@@ -16,12 +16,13 @@ endif
 
 CFLAGS += -Wno-disabled-macro-expansion
 
+BLDRT ?= dist
 CONFIGURATION ?= debug
 ifneq ($(CONFIGURATION), release)
-BLDDIR ?= dist/debug
+BLDDIR ?= $(BLDRT)/debug
 CFLAGS += -g -ggdb -O0 -U_FORTIFY_SOURCE
 else
-BLDDIR ?= dist/release
+BLDDIR ?= $(BLDRT)/release
 CFLAGS += -DNDEBUG -O3
 endif
 
