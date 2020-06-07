@@ -6,6 +6,7 @@ main (void) {
     struct lwan l;
     struct lwan_config conf = *lwan_get_default_config();
     conf.listener = "0.0.0.0:8443";
+    conf.global_headers = headers;
     lwan_init_with_config(&l, &conf);
 
     lwan_straitjacket_enforce(&jacket);
