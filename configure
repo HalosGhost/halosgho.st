@@ -41,7 +41,7 @@ check_deps () {
             continue
         fi
 
-        fh=$($i_cc -c -o tm -x c - <<< "#include \"$i\"" &> /dev/null; echo $?)
+        fh=$($i_cc -c -o tm -x c - <<< "#include <stdbool.h>\n#include \"$i\"" &> /dev/null; echo $?)
         [[ "$fh" == 0 ]] && {
             fnd='\x1b[32mY'; [[ -f "tm" ]] && rm -- tm
         } || fnd='\x1b[31m\x1b[1mN'
