@@ -35,19 +35,8 @@ td h1{
     font-size:1em;
     margin:0;
 }
-.h, .line{
-    border:none;
-}
 tr:hover{
     background-color:#fff;
-}
-.d{
-    color:#d00;
-    border:none;
-}
-.i{
-    color:#090;
-    border:none;
 }
 table{
     font-family:mono;
@@ -55,9 +44,18 @@ table{
 td{
     padding:0 0.4em;
 }
-td.num{
-    text-align:right;
-}
 #footnotes{
     border-top:1px solid;
+}
+@media(prefers-color-scheme:dark){
+    body{
+        background:#111;
+        color:#fff;
+    }
+    tr:hover{
+        background-color:#000;
+    }
+    a{
+        color:#4da6ff;
+    }
 }
