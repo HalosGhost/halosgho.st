@@ -18,7 +18,7 @@ check: bin
 	@(if [ -x ./test-suite ]; then ./test-suite; else true; fi)
 
 clean:
-	@rm -rf -- $(BLDRT) cov-int $(PROGNM).tgz make.sh ./src/*.plist
+	@rm -rf -- $(BLDRT) cov-int $(PROGNM).tgz ./src/*.plist
 
 $(BLDDIR):
 	@$(MKDIR) ./$(BLDDIR)
