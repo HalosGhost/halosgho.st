@@ -9,7 +9,7 @@ The Stack
 
 * `lwan <https://lwan.ws/>`_ - used as a library to build the webserver and page logic
 * `hitch <https://hitch-tls.org/>`_ - TLS-terminating proxy server
-* `acme-client (portable) <https://kristaps.bsd.lv/acme-client/>`_ - an ACME-protocol client for TLS Cert renewal
+* `uacme <https://github.com/ndilieto/uacme/>`_ - an ACME-protocol client for TLS Cert renewal
 
 All running on Arch Linux using `nftables <https://netfilter.org/projects/nftables/>`_ for traffic redirection and forwarding
 

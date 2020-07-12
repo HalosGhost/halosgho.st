@@ -61,7 +61,7 @@ install: all
 deploy: clean
 	@(pushd bld; \
 	$(MKDIR) packages; \
-	for i in lwan-git hitch-git acme-client-git uacme; do \
+	for i in lwan-git uacme; do \
 		cower -df "$$i" --ignorerepo &> /dev/null; \
 		pushd "$$i"; \
 		PKGDEST=../packages makepkg -s; \
