@@ -1,0 +1,12 @@
+[Unit]
+Description=hitch
+After=network.target
+
+[Service]
+Type=forking
+Restart=on-failure
+LimitNOFILE=131072
+ExecStart=/usr/bin/hitch --daemon --config /etc/hitch/hitch.conf
+
+[Install]
+WantedBy=multi-user.target
