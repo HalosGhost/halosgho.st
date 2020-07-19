@@ -59,3 +59,8 @@ td{
         color:#4da6ff;
     }
 }
+@media(any-pointer:coarse){
+    abbr[title]::after{
+        content:" (" attr(title) ")";
+    }
+}
