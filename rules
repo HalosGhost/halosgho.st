@@ -1,9 +1,10 @@
 PREFIX ?= /usr/local
-DOCDIR ?= $(DESTDIR)$(PREFIX)/share/man
-LIBDIR ?= $(DESTDIR)$(PREFIX)/lib
-BINDIR ?= $(DESTDIR)$(PREFIX)/bin
-ZSHDIR ?= $(DESTDIR)$(PREFIX)/share/zsh
-BSHDIR ?= $(DESTDIR)$(PREFIX)/share/bash-completions
+PKGDIR ?= $(DESTDIR)$(PREFIX)
+DOCDIR ?= $(PKGDIR)/share/man
+LIBDIR ?= $(PKGDIR)/lib
+BINDIR ?= $(PKGDIR)/bin
+ZSHDIR ?= $(PKGDIR)/share/zsh
+BSHDIR ?= $(PKGDIR)/share/bash-completions
 MKDIR  ?= mkdir -p
 RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
 
