@@ -7,6 +7,7 @@ ZSHDIR ?= $(PKGDIR)/share/zsh
 BSHDIR ?= $(PKGDIR)/share/bash-completions
 MKDIR  ?= mkdir -p
 RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
+SOURCES ?= $(wildcard src/*.c)
 
 .PHONY: all bin clean scan-build cov-build complexity debug doc verify install uninstall
 
