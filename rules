@@ -8,6 +8,8 @@ BSHDIR ?= $(PKGDIR)/share/bash-completions
 MKDIR  ?= mkdir -p
 RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
 SOURCES ?= $(wildcard src/*.c)
+WATCHDIRS ?= src doc
+WATCHRULE ?= all run
 
 .PHONY: all bin clean scan-build cov-build complexity debug doc verify watch install uninstall
 
@@ -52,7 +54,7 @@ verify:
 	@frama-c $(FMFLAGS) src/*.c
 
 watch:
-	@find -not -iwholename '*.git*' | entr -r make all run
+	@find $(WATCHDIRS) | entr -r make $(WATCHRULE)
 
 install:
 	@install -Dm755 $(BLDDIR)/$(PROGNM) $(BINDIR)/$(PROGNM)
