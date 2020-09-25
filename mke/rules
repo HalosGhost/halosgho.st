@@ -1,0 +1,71 @@
+PREFIX ?= /usr/local
+PKGDIR ?= $(DESTDIR)$(PREFIX)
+DOCDIR ?= $(PKGDIR)/share/man
+LIBDIR ?= $(PKGDIR)/lib
+BINDIR ?= $(PKGDIR)/bin
+ZSHDIR ?= $(PKGDIR)/share/zsh
+BSHDIR ?= $(PKGDIR)/share/bash-completions
+MKDIR  ?= mkdir -p
+RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
+SOURCES ?= $(wildcard src/*.c)
+WATCHDIRS ?= src doc
+WATCHRULE ?= run
+
+.PHONY: all bin clean scan-build cov-build complexity debug doc verify watch install uninstall
+
+all: $(BLDDIR) bin check doc
+
+bin: $(BLDDIR)
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(SOURCES) -DVERSION="\"$(VER)\n\"" -o $(BLDDIR)/$(PROGNM)
+
+check: bin
+	@(if [ -x ./test-suite ]; then RUNCMD=$(RUNCMD) ./test-suite; else true; fi)
+
+clean:
+	@rm -rf -- $(BLDRT) cov-int $(PROGNM).tgz ./src/*.plist
+
+$(BLDDIR):
+	@$(MKDIR) ./$(BLDDIR)
+
+debug: bin
+	@gdb --tui $(RUNCMD)
+
+doc: $(BLDDIR)
+	@(if [ -d doc ]; then (cd doc; \
+		sphinx-build -b man -Dversion=$(VER) \
+			-d doctree -E . ../$(BLDDIR) $(PROGNM).rst; \
+		rm -r -- doctree; \
+	); else true; fi)
+
+cov-build: $(BLDDIR)
+	@cov-build --dir cov-int ./make.sh
+	@tar czvf $(PROGNM).tgz cov-int
+
+complexity: bin
+	complexity -h ./src/*
+
+run: bin
+	@$(RUNCMD)
+
+scan-build:
+	@scan-build --use-cc=$(CC) make bin
+
+verify:
+	@frama-c $(FMFLAGS) src/*.c
+
+watch:
+	@find $(WATCHDIRS) | entr -r make $(WATCHRULE)
+
+install:
+	@install -Dm755 $(BLDDIR)/$(PROGNM) $(BINDIR)/$(PROGNM)
+	@(for i in $(shell basename $(wildcard $(BLDDIR)/*.[0-9])); do \
+		section="$${i: -1}"; \
+		install -Dm755 $(BLDDIR)/"$$i" $(DOCDIR)/man"$$section"/"$$i"; \
+	done)
+
+uninstall: doc
+	@rm -f -- $(BINDIR)/$(PROGNM)
+	@(for i in $(shell basename $(wildcard $(BLDDIR)/*.[0-9])); do \
+		section="$${i: -1}"; \
+		rm -f -- $(DOCDIR)/man"$$section"/"$$i"; \
+	done)
