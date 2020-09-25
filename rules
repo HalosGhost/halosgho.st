@@ -9,7 +9,7 @@ MKDIR  ?= mkdir -p
 RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
 SOURCES ?= $(wildcard src/*.c)
 WATCHDIRS ?= src doc
-WATCHRULE ?= all run
+WATCHRULE ?= run
 
 .PHONY: all bin clean scan-build cov-build complexity debug doc verify watch install uninstall
 
