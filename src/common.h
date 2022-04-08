@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "config.h"
+
 #define PRIV_SERVE_FILES(path) \
     .module = LWAN_MODULE_REF(serve_files), \
     .args = ((struct lwan_serve_files_settings[]) {{ \
@@ -24,8 +26,6 @@
         .cache_for = SERVE_FILES_CACHE_FOR, \
     }}), \
     .flags = (enum lwan_handler_flags)0
-
-#define WEBDIR "/srv/http"
 
 static struct lwan_straitjacket jacket = {
     .user_name = "http",

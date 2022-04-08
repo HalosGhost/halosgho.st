@@ -5,6 +5,7 @@ LIBDIR ?= $(PKGDIR)/lib
 BINDIR ?= $(PKGDIR)/bin
 ZSHDIR ?= $(PKGDIR)/share/zsh
 BSHDIR ?= $(PKGDIR)/share/bash-completions
+RTDIR  ?= $(PWD)
 MKDIR  ?= mkdir -p
 RUNCMD ?= ./$(BLDDIR)/$(PROGNM)
 SOURCES ?= $(wildcard src/*.c)
