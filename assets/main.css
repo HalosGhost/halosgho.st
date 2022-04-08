@@ -28,7 +28,7 @@ a{
 }
 a[href^="http"]:after,
 a[href^="https"]:after{
-    content:" ⇗";
+    content:"⇗";
     margin-left: 0.1em;
 }
 td h1{
@@ -44,8 +44,14 @@ table{
 td{
     padding:0 0.4em;
 }
+td.thumb{
+    text-align:center;
+}
 #footnotes{
     border-top:1px solid;
+}
+abbr{
+    font-variant:small-caps;
 }
 @media(prefers-color-scheme:dark){
     body{
@@ -61,6 +67,7 @@ td{
 }
 @media(any-pointer:coarse){
     abbr[title]::after{
-        content:" (" attr(title) ")";
+        content:" (i.e., " attr(title) ")";
+        font-variant:initial;
     }
 }
