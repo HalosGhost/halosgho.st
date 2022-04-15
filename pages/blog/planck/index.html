@@ -1,0 +1,370 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="referer" content="never">
+        <link href="/assets/main.css" type="text/css" rel="stylesheet">
+        <link href="/assets/favicon.ico" rel="icon">
+        <title>/home/halosghost/blog</title>
+    </head>
+    <body id="main">
+        <header><h1><a href="/">Sam Stuewe (halosghost)</a></h1></header>
+        <main>
+            <h2>Designing a Time Format to Last</h2>
+            <p>
+                Thinking about encoding information is a bit<sup><a id="fn-bk-1" href="#fn-1">1</a></sup> of a hobby of mine.
+                Lately, I've been thinking a lot about time.
+            </p>
+            <h3 id="pitfalls">Pitfalls of Time Formats Past</h3>
+            <p>
+                Not long ago (in the grand scheme of things), our society had a problem representing time.
+                A significant amount of software represented dates with two decimal digits for a year.
+                At its most basic level, this representation caused the year 2000 to be indistinguishable from the year 1900.
+                This is, of course, the story of <a href="https://en.wikipedia.org/wiki/Year_2000_problem"><abbr title="The Year 2000 Problem">Y2K</abbr></a>.
+                While this may seem like ancient history, we will experience a very similar problem in the not-too-distant future.
+            </p>
+            <p>
+                Much of modern software represents time as a 32-bit integral count of the number of seconds that have passed since <time datetime="1970-01-01T00:00:00Z">00:00:00 (<abbr title="Coordinated Universal Time">utc</abbr>) 1 January 1970</time> (this moment is referred to as “the UNIX Epoch,” and this format as <a href="https://en.wikipedia.org/wiki/Unix_time">“UNIX Epoch time”</a>).
+                With 31 bits (because one is used for a sign so that we can represent times <em>before</em> 1970 as well) available to represent seconds, UNIX Epoch time can represent up to 2147483647 seconds (2<sup>31</sup>-1) after New Years 1970.
+                It so happens that translates to a bit more than 68 years.
+                At <time datetime="2038-01-19T03:14:08Z">03:14:08 (<abbr>utc</abbr>) 19 January 2038</time>, this traditional format for UNIX Epoch Time overflows (making that moment indistinguishable from <time datetime="1901-12-13T20:45:52Z">20:45:52 (<abbr>utc</abbr>) 13 December 1901</time>).
+                This has come to be known as <a href="https://en.wikipedia.org/wiki/Year_2038_problem">The Year 2038 Problem</a>.
+                Several practical solutions have been proposed to solve this problem.
+            </p>
+            <p>
+                The obvious solution is perhaps the easiest and has already been widely-adopted (though it still required breaking <a href="https://en.wikipedia.org/wiki/Application_binary_interface"><abbr title="Application Binary Interface">abi</abbr></a> compatibility): use 64 bits instead of 32.
+                Doing so can represent up to <time datetime="292277026596-12-04T15:30:08Z">15:30:08 (<abbr>utc</abbr>) 4 December 292,277,026,596</time>, as well as representing time before 1970 all the way back to before the Big Bang.
+                But is this The Right Solution™?
+            </p>
+            <p>
+                While this solution is plenty enough for much of humanity's needs, there are many purposes which require subsecond precision.
+                How small do we need to go?
+                How small <em>can</em> we go?
+                Additionally, if we are to break compatibility anyway, the format we design has the freedom to be as close to ideal as possible (whatever that means).
+            </p>
+            <p>
+                In this article, we will explore the design of a new format for representing moments in time that could be used for far more varied applications.
+                In doing so, we will explore several fascinating concepts as well as a few fantastical ideas.
+                Perhaps some of what we explore will have practical benefits, but I doubt it. ☺
+                Let's dive in and see what we can come up with.
+            </p>
+            <h3 id="fractions">“Come back tomorrow night; we're gonna do fractions!”<sup><a id="fn-bk-2" href="#fn-2">2</a></sup></h3>
+            <p>
+                Linux's <a href="https://linux.die.net/man/3/clock_gettime"><code>clock_gettime(3)</code></a> returns the UNIX Epoch Time as well as nanoseconds elapsed since that moment.
+                The actual clock's resolution may be more or less precise, but the result is scaled appropriately.
+                At the very least, if we were to create a time format that could replace UNIX Epoch Time for all purposes, it must <em>at least</em> have this level of precision.
+                Assuming that this is enough precision, and we want to have the same representable range of time as 64-bit UNIX Epoch Time, how many bits do we need?
+                There are one billion nanoseconds in a second; so, to store an integer that can represent nanoseconds since the UNIX Epoch, we need &lceil;log<sub>2</sub>((2<sup>64</sup>-1) × 10<sup>9</sup> + 1)&rceil;: 94.<sup><a id="fn-bk-3" href="#fn-3">3</a></sup>
+                If there is zero padding, and you're on a platform with a 64-bit <code>time_t</code> and <code>long</code>, then this format would theoretically be 34 bits more efficient for <code>clock_gettime()</code>!
+                In a practical implementation (where we need to accommodate modern hardware's native bit-widths), we could pack this into three 32-bit integers for a total of 96 bits (saving a full 32-bits, <em>and</em> expanding the representable range by a factor of four).
+            </p>
+            <p>
+                Nanoseconds are a good step forward, but if we are to also cover scientific experiments, we must support dramatically higher precision.
+                From my cursory searching, it seems that modern experiments have managed zeptosecond-precision.<sup><a id="fn-bk-4" href="#fn-4">4</a></sup>
+                There are 10<sup>21</sup> zeptoseconds in a second, so, following the same procedure as above, we would need &lceil;log<sub>2</sub>((2<sup>64</sup>-1) × 10<sup>21</sup> + 1)&rceil;: 134.
+                Again thinking about “practical” implementations, the closest we can get to this would be to pack it into 17 8-bit integers (for a total of 136 bits).
+                This format is a bit unwieldy, but it would be enough to allow us to represent units of time more precisely than any experiment we can currently perform.
+            </p>
+            <p>
+                Not long ago (as of the authoring of this article), several theoretical physicists proposed a hypothetical apparatus that could allow for the measurement of a unit of time as small as 10<sup>-33</sup> seconds.<sup><a id="fn-bk-5" href="#fn-5">5</a></sup>
+                If this were to be achieved, our format should, of course, be able to represent it; and, we can make sure our format can do so in just &lceil;log<sub>2</sub>((2<sup>64</sup>-1) × 10<sup>33</sup> + 1)&rceil; = 174 bits.
+                In a practical implementation, that could be done as 11 16-bit integers (for a total of 176 bits).
+            </p>
+            <p>
+                In general, to design a system or format to be evergreen (i.e., perennially useful or interesting), it is best to avoid reference to technology of the moment, but instead try to draw inspiration from concepts that are likely to live long past your implementation.
+                For our purposes, I can think of no better unit than <a href="https://en.wikipedia.org/wiki/Planck_units#Planck_time">Planck Time</a> (denoted 𝑡<sub>P</sub>).
+                Clocking in at 5.3×10<sup>-44</sup>s, 1𝑡<sub>P</sub> is the amount of time it takes light to travel approximately 1.616×10<sup>-35</sup>m (which is 1 Planck Length, or ℓ<sub>P</sub>) in a vacuum.
+                To my knowledge, our current understandings of physics do not allow for the possibility of detecting or measuring any process occuring over a shorter period.
+                Nearly 20 billion times more brief than the unit we just calculated, it is <em>very</em> difficult to imagine humanity reaching a point where we can measure something with such precision that a more fine-grained unit than a Planck Time would be useful.
+                To represent such a minute unit, we'll need &lceil;log<sub>2</sub>((2<sup>64</sup>-1) × (5.3×10<sup>44</sup>) + 1)&rceil; = 213 bits.
+                Closest to that mark would be 27 8-bit integers (for 216 bits).
+            </p>
+            <h3 id="before">Wait… Did You Say “<em>Before</em>” the Big Bang?</h3>
+            <p>
+                One Planck Time following the Big Bang, the Universe (only so large as to have a radius much smaller than that of the nucleus of an atom) begins to be explainable in terms of physics we understand.
+                This moment is the Planck Epoch.
+                Before this moment, our understanding of physics does not wholly apply (even our concept of time is not well-defined).
+                Attempting to discuss time before the Planck Epoch carries no obvious meaning.
+                All the formats above have <em>significant</em> portions of their representable domain fall before this moment.
+                Even not thinking about the formats we've imagined, 64-bit UNIX Epoch Time has a massive portion of its representable range falling before the Planck Epoch.
+                Due to mounting evidence deriving from the cosmic microwave background, it is generally accepted that the age of the Universe is around 1.3787×10<sup>9</sup> ± 2.00×10<sup>7</sup> years old.<sup><a id="fn-bk-6" href="#fn-6">6</a></sup>
+                With roughly 86400 seconds in a day (not counting leap seconds because they are very difficult to account for programmatically), and 365.2422 days in Earth's tropical year, then the oldest possible moment of the Big Bang would be around 86400 × 365.2422 × (1.3787×10<sup>9</sup> + 2.00×10<sup>7</sup>) seconds ago.
+                Accounting for significant figures, but forcibly rounding up to make sure we don't accidentally exclude the Big Bang, That works out to 4.42×10<sup>16</sup> seconds ago.
+                64-bit UNIX Epoch Time can represent 9223372036854775808 seconds before 1970; or, put another way, 64-bit UNIX Epoch Time includes around 9.2×10<sup>18</sup> seconds (over 99 percent of its representable range before 1970) before the Big Bang.
+                Each of the formats we explored after 64-bit UNIX Epoch Time have <em>dramatically</em> larger sets of representable states which have no meaning.
+            </p>
+            <p>
+                It is oft-quoted in the contemporary Software Industry that we should seek to “make illegal states unrepresentable.”<sup><a id="fn-bk-7" href="#fn-7">7</a></sup>
+                Given that we do not know the exact moment of the Planck Epoch relative to now, it is likely impossible to avoid having some part of our representable state predate the Big Bang, but we should still seek to minimize this (especially if this format is meant to be the last time format we will use).
+                Fortuitously, the implications of the Planck Epoch offer us an elegant solution.
+                Instead of using an integer format where negative values represent time before the Epoch, we can choose the Planck Epoch to be our format's Epoch, which results in negative values of our format being meaningless.
+                Then, we can dispense with an integral format in favor of a natural format (ℕ<sub>0</sub>; i.e., the non-negative Integers).
+                Not only have we managed to make the vast majority of illegal states unrepresentable, but we will have built-in extensibility (of adding more bits without increasing illegal state-space) should someone in the future find a need for representing dates past the end of what our format can handle.
+            </p>
+            <p>
+                There is, however, an obvious problem with this solution: as mentioned, we don't know exactly how long ago the Planck Epoch took place.
+                We <em>can</em> estimate it though!
+                Despite the relatively narrow range of time the true value is contained in, no matter what we pick, we will either introduce some number of illegal states, or would fall short of being able to represent the true moment of the Planck Epoch.
+                In my opinion, the trade-off of introducing some illegal state in favor of being sure that our representable range includes the Planck Epoch far outweighs the possibility of having this moment be unrepresentable.
+                So, the most sensible option is to take the oldest moment of this range: 1.3787×10<sup>9</sup> + 2.00×10<sup>7</sup> ≈ 1.3987×10<sup>9</sup>.
+                Adding this value (multiplied by the conversion to Planck Time and an estimate of the number of seconds in a year) to the maximum representable moment of our Planck Time-resolution format allows us to determine that we would need &lceil;log<sub>2</sub>(1.3987×10<sup>9</sup> × 86400 × 365.2422 × (5.3×10<sup>44</sup>) + (2<sup>64</sup>-1) × (5.3×10<sup>44</sup>) + 1)&rceil;: 213 (216 in the “practical” implementation using 27 8-bit integers).
+                We have managed to dramatically reduce the number of illegal states with no change in our bit-width at all.
+            </p>
+            <p>
+                The uncertainty of the Epoch also casts the value of the current moment in the format into doubt.
+                If we can translate the moment of the UNIX Epoch into this format, then we have an anchor point to start counting from.
+                Again, for the sake of avoiding a choice that could push the true moment of the Planck Epoch outside our representable range, we can <em>subtract</em> the Planck time between the UNIX Epoch and now from the upper bound of when the Planck Epoch may have happened.
+                This likely inflates our calculation of the translation of the UNIX Epoch to our format, but can be easily adjusted for with the simple arithmetic we've been using throughout this article if the boundaries for these timespans become more clear.
+                The amount of Planck Time elapsed between the UNIX Epoch and now is simply the current UNIX Epoch Time in seconds multiplied by 5.3×10<sup>44</sup> (around 8.5×10<sup>53</sup> at the time of writing).
+                The upper bound on the possible moment of the Planck Epoch is 1.3787×10<sup>9</sup> + 2.00×10<sup>7</sup> ≈ 1.3987×10<sup>9</sup> years ago.
+                So, ((1.3987×10<sup>9</sup>) × 86400 × 365.2422 × 5.3×10<sup>44</sup>) + (8.5×10<sup>53</sup>) ≈ 2.3×10<sup>61</sup>.
+                More generally, assuming <code>s</code> is the number of seconds since the UNIX Epoch, we can define the following function (T) to approximate the current time in the Planck Time Format:<br>
+                T(s) = (1.3987×10<sup>9</sup>) × 86400 × 365.2422 × 5.3×10<sup>44</sup> + s × 5.3×10<sup>44</sup>.
+                Armed with this translation, we can now reasonably estimate the current time in our format.
+            </p>
+            <h3 id="tenses">When we Started… When we Are… So, When do we Go?</h3>
+            <p>
+                If this creation really is meant to stand the test of time, it must be able to stretch <em>far</em> into the future.
+                Our initial aspirations were to have the same upper bound as a 64-bit integer count of seconds since the UNIX Epoch.
+                But, just as we have stretched the format to handle the earliest moment imaginable, perhaps we should instead tie our upper-bound to something more concretely of-interest.
+                One obvious marker for how far our format should reach would be the point at which The Sun expands into a Red Giant (and either engulfs the Earth entirely, or at least makes life on Earth impossible).
+                That point should happen sometime around the beginning of the “asymptotic giant branch” phase of the Sun's life (which is expected to take place between 5 and 7 billion years from now).
+                As with the Planck Epoch, the exact moment of this is not known, but we can do as we did before and increase our chances of encompassing it by choosing the upper bound.
+                Instead of using (2<sup>64</sup>-1) × (5.3×10<sup>44</sup>) as we did in our above calculations, we will instead use 7×10<sup>9</sup> × 86400 × 365.2422 × (5.3×10<sup>44</sup>) (7 billion years converted to Planck Time).
+                To represent the stretch from the Big Bang to the end of life on Earth, we need &lceil;log<sub>2</sub>((86400 × 365.2422 × (5.3×10<sup>44</sup>) × (1.3987×10<sup>9</sup>)) + (86400 × 365.2422 × (5.3×10<sup>44</sup>) × 7×10<sup>9</sup>) + 1)&rceil; = 207 (208, represented as 13 16-bit integers).
+                We've managed to save 6 (8) bits and have likely had little negative impact on humanity's ability to represent time.
+            </p>
+            <p>
+                This is almost certainly good enough for most purposes, but as we are including scientific ends as part of our goal in representation, perhaps we should aim to encompass any time that might be of-interest.
+                We could discuss the beginning of the Dark Era (where all Black Holes and Stars have evaporated or otherwise disappeared) which will likely begin either around <a href="https://en.wikipedia.org/wiki/Future_of_an_expanding_universe#Dark_Era_and_Photon_Age">10<sup>108</sup> years from now</a> or <a href="https://en.wikipedia.org/wiki/Future_of_an_expanding_universe#Dark_Era_(without_photon_decay)">10<sup>10<sup>120</sup></sup> years from now</a> (based on whether protons turn out to be unstable and therefore can decay or not, respectively).
+                If protons can decay (i.e., The Dark Era will begin at the lower bound), then our format would need &lceil;log<sub>2</sub>((1.3987×10<sup>9</sup>) × 86400 × 365.2422 × (5.3×10<sup>44</sup>) + 10<sup>108</sup> × 86400 × 365.2422 × (5.3×10<sup>44</sup>) + 1)&rceil; = 533 (536, represented as 67 8-bit integers).
+                Even going to this lower bound (the latest point at which the Universe with proton decay is likely to enter the Dark Era), we more than doubled the bit-width required.
+                We also passed an unfortunate milestone: most mainstream machines of the moment do not have registers larger than 512 bits (and registers as large as 512 bits are uncommon and frequently have unfortunate performance characteristics).
+                We are no longer in the realm of reasonable performance characteristics for modern hardware (not that we ever truly were).
+            </p>
+            <p>
+                When working with numbers as large as 10<sup>108</sup> it's hard to keep perspective on just how massive other numbers are in-comparison.
+                To give a sense of scale, 10<sup>108</sup> is far less than 0.00000000000000000001% of 10<sup>10<sup>120</sup></sup>
+                If we are to try and represent numbers so large, we will certainly need some other form of representing them.
+                Before we dive into how we might do so, let's first talk about the nature of time during the Dark Era.
+                Our concept of time is inseparable from matter.<sup><a id="fn-bk-8" href="#fn-8">8</a></sup>
+                In pursuit of creating a reference definition of time which is measureable and consistent (and perhaps also in recognition of this deep relationship), we have defined our primary unit of time (i.e., seconds) in terms of a physical process: namely, <a href="https://en.wikipedia.org/wiki/Second#%22Atomic%22_second">a specific transition of Caesium-133</a>.
+                I mention this because the Dark Era is essentially the point when all matter as we know it has decayed to nothing.
+                There will still be a few neutrinos, positrons, electrons, and photons flying around, but effectively nothing else will exist.
+                As a result, the notion of time as we understand it begins to lose meaning.
+                So, is there a point to representing time in this era?
+                Probably not.
+                However, because Proton Decay is an open question, we haven't necessarily even gotten to the point of representing the beginning of the Dark Era.
+                Additionally, it is theoretically possible that another Big Bang event might happen 10<sup>10<sup>10<sup>56</sup></sup></sup> years from now<sup><a id="fn-bk-9" href="#fn-9">9</a></sup>, and surely we would want to be able to represent the timestamp of that event should we need to.
+            </p>
+            <p>
+                If we were to simply try to add bits to our format to represent time on this scale, we would quickly outrun our hardware's general capabilities.
+                For example, a computer with 32<a href="https://en.wikipedia.org/wiki/Binary_prefix"><abbr title="Gibibytes">GiB</abbr>s</a> of RAM can effectively store (for quick usage) up to 2<sup>30</sup> × 32 × 8 (or, in other words, 2<sup>38</sup>) bits.
+                Reversing our formula for finding the number of bits necessary to store a number, we can instead determine the largest number that this hypothetical computer could store.
+                In particular, it would be 2<sup>2<sup>38</sup></sup>-1.
+                Without even trying to evaluate such a large number, we can say that 2 is less than 10, and 2<sup>38</sup> is less than 10<sup>120</sup>; therefore, 2<sup>2<sup>38</sup></sup>-1 is smaller than 10<sup>10<sup>120</sup></sup>.
+                And that's just the count of years, not even the count of Planck Time across those years.
+                This means that the number of bits needed to even represent the upper bound on the <em>beginning</em> of the Dark Era is impractical (and so it would be even more impractical to try to be able to represent time <em>throughout</em> the Dark Era).
+                However, because time has less and less meaning the closer we get to the Dark Era (and even less the deeper into the Dark Era we venture), perhaps we can afford some loss of precision at the upper edge of this format.
+            </p>
+            <p>
+                Taking a cue from <a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE 754</a>, we could introduce a scaling factor that lets us trade off precision with a dramatic increase in representable range.
+                The best part of doing this is that we can maintain perfect precision when this factor is zero; then, as it increases, we progressively lose precision.
+                As a result, the natural trailing off of the meaning of time is actually captured by our format; and as time means less and less, our format tracks it less and less precisely.
+                However, using an exponent for this scaling factor is certainly not sufficient (even <em>octuple</em>-precision floating point numbers can only represent a number as large as <a href="https://en.wikipedia.org/wiki/Octuple-precision_floating-point_format">1.6113×10<sup>78913</sup></a>).
+                We need to be able to scale our format out to dramatically larger values; we need something that grows <em>much</em> faster than exponentiation.
+            </p>
+            <h3 id="fundamental">How Fundamental is Fundamental?</h3>
+            <p>
+                Addition, Subtraction, Multiplication, and Division.
+                These are often referred to as the four fundamental operations of arithmetic.
+                In the sense that you can largely derive the rest of our arithmetic system using only these operations, this moniker is reasonable.
+                However, a concept called <a href="https://en.wikipedia.org/wiki/Hyperoperation">Hyperoperation</a> exposes that these operations can themselves be derived.<sup><a id="fn-bk-10" href="#fn-10">10</a></sup>
+                <a href="https://en.wikipedia.org/wiki/Tetration">Tetration</a>, iterated exponentiation (i.e., Hyper-4), grows unimaginably fast, which makes it useful for describing incredibly large numbers in terms of very small ones.
+                For example, where 8<sup>2</sup> = 64, <sup>2</sup>8 (i.e., 8<sup>8</sup>) = 16777216, and <sup>3</sup>8 (i.e., 8<sup>8<sup>8</sup></sup>) = 6.01452×10<sup>15151335</sup>.
+            </p>
+            <p>
+                In the same way that logrithmation is the inverse of exponentation<sup><a id="fn-bk-11" href="#fn-11">11</a></sup>, tetration has an inverse function in the form of <a href="https://en.wikipedia.org/wiki/Iterated_logarithm">log<sup>*</sup>()</a>.<sup><a id="fn-bk-12" href="#fn-12">12</a></sup>
+                Roughly speaking, log<sup>*</sup>() is the number of successive logarithms needed to be applied to get a given Real number to be in the interval [0,1).
+                So, for example, log<sup>*</sup>(100) = 2; so is log<sup>*</sup>(1000).
+                In fact, where <code>n</code> is between 10 and 10<sup>10</sup>-1 (inclusive), log<sup>*</sup>(n) = 2.
+                Between 10<sup>10</sup> and 10<sup>10<sup>10</sup></sup>-1 (inclusive), log<sup>*</sup>(n) = 3.
+                Where Tetration grows unimaginably fast, log<sup>*</sup>() grows unimaginably slowly.
+            </p>
+            <p>
+                We have an excellent candidate for our scaling factor.
+                Rather than attempting to store an exponent, we can store the tetration height (which we can calculate with log<sup>*</sup>()).
+                Where 10<sup>10<sup>120</sup></sup> is intractibly large to represent bitwise, log<sup>*</sup>(10<sup>10<sup>120</sup></sup>) = 4, and log<sup>*</sup>(10<sup>10<sup>10<sup>56</sup></sup></sup>) = 5.
+                With only three bits, we can store a factor that expands the representable range by <em>many, <strong>many</strong></em> orders of magnitude.
+            </p>
+            <p>
+                To scale a number (a) in the interval [a<sub>α</sub>, a<sub>ω</sub>] to the number (b) in the interval [b<sub>α</sub>, b<sub>ω</sub>], we can use the following formula: b = b<sub>α</sub> + (b<sub>ω</sub> - b<sub>α</sub>) × (a - a<sub>α</sub>) ÷ (a<sub>ω</sub> - a<sub>α</sub>).
+                We know that the initial range is always [0, 2<sup>533</sup>-1]—so the formula can be simplified: b = b<sub>α</sub> + (b<sub>ω</sub> - b<sub>α</sub>) × a ÷ (2<sup>533</sup>-1).
+                The scaling factor is, in effect, a way to select the values of b<sub>α</sub> and b<sub>ω</sub>.
+                The functions below may make this a little more clear.
+            </p>
+            <p>
+                bounds(0) := [0, 2<sup>533</sup> - 1] <br />
+                bounds(f) := [<sup>f-1</sup>16 × 2<sup>533</sup>, <sup>f</sup>16 × 2<sup>533</sup> - 1]
+            </p>
+            <p>
+                scale(t, s) := b<sub>fst</sub> + (b<sub>snd</sub> - b<sub>fst</sub>) × t ÷ 2<sup>533</sup> - 1 where b = bounds(s)
+            </p>
+            <p>
+                These definitions garner us several significant benefits:
+                <ul>
+                    <li>By expressly defining bounds(0) to our initial interval, when s = 0, the value is unchanged</li>
+                    <li>The first representable moment in any given interval is effectively the moment immediately after the last moment in the previous interval (accounting for loss-of-precision)</li>
+                    <li>Via progressive loss of precision, we have <em>dramatically</em> increased our representable range</li>
+                    <li>Careful choice of our scaling factor's base gives us some handy properties<sup><a id="fn-bk-13" href="#fn-13">13</a></sup></li>
+                    <li>They make another helper function available to us for calculating the size of a step (in <em>t</em><sub>P</sub>) after scaling:<br>new_distance(s) := (b<sub>snd</sub> - b<sub>fst</sub>) ÷ 2<sup>533</sup> where b = bounds(s)</li>
+                </ul>
+            </p>
+            <p>
+                The table below demonstrates the affect this scaling has on our representable range:
+                <table>
+                    <thead>
+                        <tr>
+                            <th>s</th>
+                            <th>multiplier</th>
+                            <th>bits (effective)</th>
+                            <th>increase</th>
+                            <th>step</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td>1</td><td>533</td><td></td><td>1<em>t</em><sub>P</sub></td></tr>
+                        <tr><td>1</td><td>16</td><td>537</td><td>4</td><td>~15<em>t</em><sub>P</sub></td></tr>
+                        <tr><td>2</td><td>16<sup>16</sup></td><td>601</td><td>64</td><td>~15.9 ys</td></tr>
+                        <tr><td>3</td><td>16<sup>16<sup>16</sup></sup></td><td>73786976294838207065</td><td>2<sup>66</sup></td><td>…</td></tr>
+                    </tbody>
+                </table>
+            </p>
+            <p><!-- todo: keep reading from here for editing -->
+                I.e., when the scaling factor is 0, we have the same range we have discussed so far.
+                But, when the scaling factor is 1, our range now goes from [2<sup>533</sup>, 2<sup>537</sup> - 1] effectively adding 4 bits of range while decreasing our precision to about 15 <em>t</em><sub>P</sub> per-step.
+                Scaling up again adds another 64 bits to our range and decreases our precision to just under 16 yoctoseconds per-step.
+                With the third-scaling up, the scaling factor is so large that new_distance(3)'s value is dominated by it:<br>
+                ((16<sup>16<sup>16</sup></sup> × 2<sup>533</sup> - 1) - (16<sup>16</sup> × 2<sup>533</sup>)) ÷ 2<sup>533</sup> ≈ 16<sup>16<sup>16</sup></sup>.<br>
+            </p>
+            <p>
+                These numbers are large enough that most computers (including mine) are not easily able to work with them, so filling in the final column (even very roughly) is quite difficult.
+                In some sense, this is a drawback because it makes it very difficult to actually specify the precision present in the higher scalings.
+                However, we know we can represent times far enough out into the future to cover all of the points-of-interest mentioned so far.
+                The largest height (for the base of 10, measuring years) of an event we need to cover was 5.
+                Our format has a base of 16 (and so scales far faster), but measures <em>t</em><sub>P</sub> and supports a height up to <em>7</em>.
+                Even if height 5 doesn't quite reach what we had hoped, height 6 would far surpass it.
+                What's more, despite that it is impractical to talk about the unit and value of each step at the higher scaling factors, we can still use the 533 bits as a fraction to declare how far through the new period the time-of-interest occurs.
+            </p>
+            <h3 id="timezones">“That's just like… your [frame of reference], man.”</h3>
+            <p>
+                I just want to take a brief tangent to quickly discuss something we've left out so far: coordinating across great distances requires some method of adjusting for travel time.
+            </p>
+            <p>
+                On Earth, timezones enable coordination between people all over the planet.<sup><a id="fn-bk-14" href="#fn-14">14</a></sup>
+                In particular, they give us a common language to declare an offset from an agreed-upon reference point (mitigating the difference in solar time between locations).
+                However, our time format is far less Terrestrially-focused.
+            </p>
+            <p>
+                A similar system could be established for our format (though it would need a stable point to use as the reference frame)—for Earth's timezones, this takes of the form of <abbr>utc</abbr>, earlier <abbr title="Greenwich Mean Time">gmt</abbr>.
+                An obvious point-of-reference we could leverage would be the galactic center (perhaps also separating the galactic plane into sections).
+                This also lends a reasonable extension to other galaxies: add an intergalactic exchange to specify which galactic center you're referencing (which could roughly be the distance from the Milky Way's galactic center to the specified galaxy's center).
+                However, that system is rather Milky Way-centric; and, unfortunately, there is no accepted center of the universe that we can leverage as our reference point.
+                It also incorporates an interesting oddity: because planets, stars, and galaxies all move, this timezone marker will change over time (requiring an updating formula to calculate the time offset between galaxies).
+            </p>
+            <p>
+                Obviously, this is its own rabbit hole, but we can (thankfully?) ignore it.
+                Such a time offset, as mentioned above, is really just a distance calculation between two points (a calculation made very frequently by those in the field<sup><a id="fn-bk-15" href="#fn-15">15</a></sup>).
+                Should someone communicating a specified time wish to disambiguate their frame-of-reference, they can include the 3-dimensional coordinate using Earth (or any other location known to both parties) as the origin.
+            </p>
+            <h3 id="conclusion"><em>[When] and Back Again</em> by Yours Truly</h3>
+            <p>
+                Phew…
+                Well, dear reader, I don't know about you, but I'm quite excited for hardware manufacturers to start adding 536-bit registers so we can start using this format in our computers!
+            </p>
+            <p>
+                This article is, of course, an exercise in absurdity, taking a human-scale concept and attempting to extrapolate out to the scale of the universe and hoping that the rickety van we built along the way doesn't collapse under the weight of the duct-tape we used.
+                However, writing this piece has felt like a deep exploration of just how small we are.
+                I recognize that it is clichéd, but the people who originally specified UNIX Epoch Time as a 32-bit integer weren't wrong or foolish to do so (nor were those who reasonably proposed, accepted, and implemented 64-bit UNIX Epoch Time).
+                They were simply operating on the practical scale that faced them.
+                The format I've explored above is <em>still</em> impractical at the time-of-writing; imagine how Ken Thompson and Rob Pike (creator and co-implementer of UTF-8) would have reacted if someone had proposed a 536-bits wide format for every timestamp.
+            </p>
+            <p>
+                Despite the obvious impracticality of such a format, I hope it was at least mildly as interesting for anyone who's made it to the end as it was for me to write.
+                The vastness of the universe is incomprehensible, but maybe we've helped to nail it down to slightly more tractible bounds.
+            </p>
+        </main>
+        <section id="footnotes">
+            <ol>
+                <li id="fn-1">
+                    Sorry… It was honestly unintentional.
+                    But, when I noticed it, I couldn't help but leave it in…
+                    <a href="#fn-bk-1">↩</a>
+                </li>
+                <li id="fn-2">
+                    One of my favorite lines from Tom Lehrer's <a href="https://www.youtube.com/watch?v=DfCJgC2zezw">“New Math”</a>.
+                    How I wish he would have indeed written a sequel.
+                    <a href="#fn-bk-2">↩</a>
+                </li>
+                <li id="fn-3">
+                    I.e., the ceiling (&lceil;n&rceil;, rounding toward positive infinity to the nearest whole number) of the base-2 logarithm (log<sub>2</sub>(), which can be calculated as log<sub>2</sub>(n) = log<sub>10</sub>(n) / log<sub>10</sub>(2)) of the largest representable number.
+                    Generally, &lceil;log<sub>b</sub>(n + 1)&rceil; effectively tells you the number of places you need in base-b to represent n.
+                    Specifically, we can use this formula to determine the number of bits we need.
+                    <a href="#fn-bk-3">↩</a>
+                </li>
+                <li id="fn-4">
+                    A team (fittingly) at the Max Planck Institute of Quantum Optics has managed to perform an experiment that had a time resolution around <a href="https://www.newscientist.com/article/2112537-smallest-sliver-of-time-yet-measured-sees-electrons-fleeing-atom/">850 zeptoseconds</a>.
+                    <a href="#fn-bk-4">↩</a>
+                </li>
+                <li id="fn-5">
+                    cf. <a href="https://phys.org/news/2020-06-theorists-upper-limit-quantization.html">this article</a> discussing the experiment.
+                    <a href="#fn-bk-5">↩</a>
+                </li>
+                <li id="fn-6">
+                    As supported by various research, most recently (at the time of writing, and to the author's knowledge) in 2018 by the <a href="https://arxiv.org/abs/1807.06209">Planck Collaboration</a>.
+                    <a href="#fn-bk-6">↩</a>
+                </li>
+                <li id="fn-7">
+                    Originally published by <a href="https://blog.janestreet.com/effective-ml-revisited/">Yaron Minsky</a> discussing effective tactics for functional programming.
+                    <a href="#fn-bk-7">↩</a>
+                </li>
+                <li id="fn-8">
+                    I.e., when our brains are interpreting sensory data, the process by which that data is interpreted is made up of physical and chemical processes.
+                    Additionally, that sensory data originates from some physical and/or chemical reaction that we observe.
+                    <a href="#fn-bk-8">↩</a>
+                </li>
+                <li id="fn-9">
+                    According to <a href="https://arxiv.org/abs/hep-th/0410270">a theoretical physics article</a> published in 2004.
+                    <a href="#fn-bk-9">↩</a>
+                </li>
+                <li id="fn-10">
+                    A reasonable, short explanation of Hyperoperation is that addition can be defined as iterated incrementation (i.e., “5+7” is the same as “five times over, increase 7 by 1”).
+                    Multiplication, then, is just iterated addition, and exponentiation is just iterated multiplication, etc.
+                    <a href="#fn-bk-10">↩</a>
+                </li>
+                <li id="fn-11">
+                    Well… one of the two inverses anyway (the other being a root);
+                    <a href="#fn-bk-11">↩</a>
+                </li>
+                <li id="fn-12">
+                    Actually, tetration (like exponentiation) has two inverse functions, neither of which is log<sup>*</sup>().
+                    However, because we are concerned with storing a non-negative integer (ℕ<sub>0</sub>), log<sup>*</sup>(n), which is equivalent to <a href="https://en.wikipedia.org/wiki/Iterated_logarithm">&lceil;slog<sub>e</sub>(n)&rceil;</a>, is sufficient.
+                    <a href="#fn-bk-12">↩</a>
+                </li>
+                <li id="fn-13">
+                    Most of the time estimates we are working with (reasonably so) use a base of 10.
+                    By using 16, we know we scale <em>faster</em> than these estimates, but 16 is also an even power of 2 which makes some estimations simpler.
+                    <a href="#fn-bk-13">↩</a>
+                </li>
+                <li id="fn-14">
+                    They are, however, politically defined rather than mechanically defined (which has led to all manner of oddities).
+                    <a href="#fn-bk-14">↩</a>
+                </li>
+                <li id="fn-15">
+                    <a href="https://xkcd.com/285/">[Citation Needed]</a>.
+                    <a href="#fn-bk-15">↩</a>
+                </li>
+            </ol>
+        </section>
+    </body>
+</html>
