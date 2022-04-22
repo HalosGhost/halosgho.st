@@ -29,9 +29,9 @@ clean:
 	@(pushd bld; rm -rf -- $(PACKAGES) src pkg packages $(PROGNM); popd)
 
 install: all
-	@$(MKDIR) -- $(BINDIR) $(SVCDIR)
-	@cp -a --no-preserve=ownership $(BLDDIR)/* $(PKGDIR)/
-	@cp -a --no-preserve=ownership svc/* $(SVCDIR)/
+	@$(MKDIR) -- $(BINDIR) $(SVCDIR) $(MAINDIR)
+	@cp -a --no-preserve=ownership $(BLDDIR)/* $(MAINDIR)/
+	@install -m755 -t $(SVCDIR) svc/*
 	@install -m755 -t $(BINDIR) bin/*
 
 packages: clean
@@ -55,6 +55,6 @@ deploy: packages
 	)
 
 uninstall:
-	@rm -rf -- $(PKGDIR)/{assets,media,pages,.well-known}
+	@rm -rf -- $(MAINDIR)/{assets,media,pages,.well-known}
 	@rm -f  -- $(SVCDIR)/{$(PROGNM),redirector}.service $(SVCDIR)/update-copyright.{service,timer} $(SVCDIR)/uacme.{timer,service}
 	@rm -f  -- $(BINDIR)/website

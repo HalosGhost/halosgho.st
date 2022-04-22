@@ -25,10 +25,10 @@ prepare () {
 
 build () {
     cd halosgho.st
-    make
+    make PREFIX="/usr"
 }
 
 package () {
     cd halosgho.st
-    make DESTDIR="$pkgdir" install
+    make DESTDIR="$pkgdir" PREFIX="/usr" install
 }

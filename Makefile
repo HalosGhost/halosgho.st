@@ -2,7 +2,7 @@ PROGNM = hgweb
 
 CC ?= gcc
 CFLAGS ?= -O2 -fPIE -flto -fstack-protector-strong --param=ssp-buffer-size=1 -Wno-reserved-id-macro -Wall -Wextra -Wpedantic -Werror -std=gnu18 -fsanitize=undefined -march=native
-LDFLAGS ?= `pkg-config --libs lwan`
+LDFLAGS += `pkg-config --libs lwan`
 VER = `git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'`
 FMFLAGS = -wp -then -wp -wp-rte
 SOURCES ?= $(wildcard src/*.c)
@@ -38,3 +38,7 @@ include mke/rules
 ifneq ($(wildcard ./overrides.mk),)
 include ./overrides.mk
 endif
+
+WEBDIR  := /srv/http
+MAINDIR := $(DESTDIR)$(WEBDIR)
+SVCDIR  := $(DESTDIR)$(PREFIX)/lib/systemd/system/
