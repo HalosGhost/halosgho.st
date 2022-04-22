@@ -3,7 +3,7 @@
 
 #pragma once
 
-#define WEBDIR "/home/halosghost/prj/halosgho.st/dist/debug/"
+//#define WEBDIR "/srv/http"
 
 #include "defaults.h"
 
