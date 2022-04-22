@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -33,7 +34,7 @@
             </p>
             <p>
                 The obvious solution is perhaps the easiest and has already been widely-adopted (though it still required breaking <a href="https://en.wikipedia.org/wiki/Application_binary_interface"><abbr title="Application Binary Interface">abi</abbr></a> compatibility): use 64 bits instead of 32.
-                Doing so can represent up to <time datetime="292277026596-12-04T15:30:08Z">15:30:08 (<abbr>utc</abbr>) 4 December 292,277,026,596</time>, as well as representing time before 1970 all the way back to before the Big Bang.
+                Doing so can represent up to <time>15:30:08 (<abbr>utc</abbr>) 4 December 292,277,026,596</time>, as well as representing time before 1970 all the way back to before the Big Bang.
                 But is this The Right Solution™?
             </p>
             <p>
@@ -212,35 +213,35 @@
             </p>
             <p>
                 These definitions garner us several significant benefits:
-                <ul>
-                    <li>By expressly defining bounds(0) to our initial interval, when s = 0, the value is unchanged</li>
-                    <li>The first representable moment in any given interval is effectively the moment immediately after the last moment in the previous interval (accounting for loss-of-precision)</li>
-                    <li>Via progressive loss of precision, we have <em>dramatically</em> increased our representable range</li>
-                    <li>Careful choice of our scaling factor's base gives us some handy properties<sup><a id="fn-bk-13" href="#fn-13">13</a></sup></li>
-                    <li>They make another helper function available to us for calculating the size of a step (in <em>t</em><sub>P</sub>) after scaling:<br>new_distance(s) := (b<sub>snd</sub> - b<sub>fst</sub>) ÷ 2<sup>533</sup> where b = bounds(s)</li>
-                </ul>
             </p>
+            <ul>
+                <li>By expressly defining bounds(0) to our initial interval, when s = 0, the value is unchanged</li>
+                <li>The first representable moment in any given interval is effectively the moment immediately after the last moment in the previous interval (accounting for loss-of-precision)</li>
+                <li>Via progressive loss of precision, we have <em>dramatically</em> increased our representable range</li>
+                <li>Careful choice of our scaling factor's base gives us some handy properties<sup><a id="fn-bk-13" href="#fn-13">13</a></sup></li>
+                <li>They make another helper function available to us for calculating the size of a step (in <em>t</em><sub>P</sub>) after scaling:<br>new_distance(s) := (b<sub>snd</sub> - b<sub>fst</sub>) ÷ 2<sup>533</sup> where b = bounds(s)</li>
+            </ul>
             <p>
                 The table below demonstrates the affect this scaling has on our representable range:
-                <table>
-                    <thead>
-                        <tr>
-                            <th>s</th>
-                            <th>multiplier</th>
-                            <th>bits (effective)</th>
-                            <th>increase</th>
-                            <th>step</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>0</td><td>1</td><td>533</td><td></td><td>1<em>t</em><sub>P</sub></td></tr>
-                        <tr><td>1</td><td>16</td><td>537</td><td>4</td><td>~15<em>t</em><sub>P</sub></td></tr>
-                        <tr><td>2</td><td>16<sup>16</sup></td><td>601</td><td>64</td><td>~15.9 ys</td></tr>
-                        <tr><td>3</td><td>16<sup>16<sup>16</sup></sup></td><td>73786976294838207065</td><td>2<sup>66</sup></td><td>…</td></tr>
-                    </tbody>
-                </table>
             </p>
-            <p><!-- todo: keep reading from here for editing -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>s</th>
+                        <th>multiplier</th>
+                        <th>bits (effective)</th>
+                        <th>increase</th>
+                        <th>step</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>0</td><td>1</td><td>533</td><td></td><td>1<em>t</em><sub>P</sub></td></tr>
+                    <tr><td>1</td><td>16</td><td>537</td><td>4</td><td>~15<em>t</em><sub>P</sub></td></tr>
+                    <tr><td>2</td><td>16<sup>16</sup></td><td>601</td><td>64</td><td>~15.9 ys</td></tr>
+                    <tr><td>3</td><td>16<sup>16<sup>16</sup></sup></td><td>73786976294838207065</td><td>2<sup>66</sup></td><td>…</td></tr>
+                </tbody>
+            </table>
+            <p>
                 I.e., when the scaling factor is 0, we have the same range we have discussed so far.
                 But, when the scaling factor is 1, our range now goes from [2<sup>533</sup>, 2<sup>537</sup> - 1] effectively adding 4 bits of range while decreasing our precision to about 15 <em>t</em><sub>P</sub> per-step.
                 Scaling up again adds another 64 bits to our range and decreases our precision to just under 16 yoctoseconds per-step.
