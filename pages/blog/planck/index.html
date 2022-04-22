@@ -25,16 +25,16 @@
                 While this may seem like ancient history, we will experience a very similar problem in the not-too-distant future.
             </p>
             <p>
-                Much of modern software represents time as a 32-bit integral count of the number of seconds that have passed since <time datetime="1970-01-01T00:00:00Z">00:00:00 (<abbr title="Coordinated Universal Time">utc</abbr>) 1 January 1970</time> (this moment is referred to as “the UNIX Epoch,” and this format as <a href="https://en.wikipedia.org/wiki/Unix_time">“UNIX Epoch time”</a>).
+                Much of modern software represents time as a 32-bit integral count of the number of seconds that have passed since 00:00:00 (<abbr title="Coordinated Universal Time">utc</abbr>) 1 January 1970 (this moment is referred to as “the UNIX Epoch,” and this format as <a href="https://en.wikipedia.org/wiki/Unix_time">“UNIX Epoch time”</a>).
                 With 31 bits (because one is used for a sign so that we can represent times <em>before</em> 1970 as well) available to represent seconds, UNIX Epoch time can represent up to 2147483647 seconds (2<sup>31</sup>-1) after New Years 1970.
                 It so happens that translates to a bit more than 68 years.
-                At <time datetime="2038-01-19T03:14:08Z">03:14:08 (<abbr>utc</abbr>) 19 January 2038</time>, this traditional format for UNIX Epoch Time overflows (making that moment indistinguishable from <time datetime="1901-12-13T20:45:52Z">20:45:52 (<abbr>utc</abbr>) 13 December 1901</time>).
+                At 03:14:08 (<abbr>utc</abbr>) 19 January 2038, this traditional format for UNIX Epoch Time overflows (making that moment indistinguishable from 20:45:52 (<abbr>utc</abbr>) 13 December 1901).
                 This has come to be known as <a href="https://en.wikipedia.org/wiki/Year_2038_problem">The Year 2038 Problem</a>.
                 Several practical solutions have been proposed to solve this problem.
             </p>
             <p>
                 The obvious solution is perhaps the easiest and has already been widely-adopted (though it still required breaking <a href="https://en.wikipedia.org/wiki/Application_binary_interface"><abbr title="Application Binary Interface">abi</abbr></a> compatibility): use 64 bits instead of 32.
-                Doing so can represent up to <time>15:30:08 (<abbr>utc</abbr>) 4 December 292,277,026,596</time>, as well as representing time before 1970 all the way back to before the Big Bang.
+                Doing so can represent up to 15:30:08 (<abbr>utc</abbr>) 4 December 292,277,026,596, as well as representing time before 1970 all the way back to before the Big Bang.
                 But is this The Right Solution™?
             </p>
             <p>
